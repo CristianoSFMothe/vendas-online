@@ -12,7 +12,7 @@ import { hash } from 'bcrypt';
 import { isValidCpf } from './utils/isValidCpf.utils';
 import { formatCpf } from './utils/formatting.utils';
 import { calculateAge } from './utils/age.utils';
-import { ReturnsUserDto } from './dtos/returnUser.dto';
+import { ReturnUserDto } from './dtos/returnUser.dto';
 
 @Injectable()
 export class UserService {
@@ -21,7 +21,7 @@ export class UserService {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  async createUser(createUserDto: CreateUserDto): Promise<ReturnsUserDto> {
+  async createUser(createUserDto: CreateUserDto): Promise<ReturnUserDto> {
     // Validação de CPF
     if (!isValidCpf(createUserDto.cpf)) {
       throw new BadRequestException('CPF inválido.');
@@ -63,7 +63,7 @@ export class UserService {
       age,
     });
 
-    return new ReturnsUserDto(user);
+    return new ReturnUserDto(user);
   }
 
   async getAllUser(): Promise<UserEntity[]> {
