@@ -29,9 +29,9 @@ export class UserService {
     }
 
     // Verificar se o email já está cadastrado
-    const existingUserByEmail = await this.userRepository.findOne({
-      where: { email: createUserDto.email },
-    });
+    const existingUserByEmail = await this.findUserByEmail(
+      createUserDto.email,
+    ).catch(() => undefined);
 
     if (existingUserByEmail) {
       throw new ConflictException('Email já cadastrado.');
@@ -108,7 +108,7 @@ export class UserService {
     });
 
     if (!user) {
-      throw new NotFoundException('Usuário ou senha inválidos.');
+      throw new NotFoundException('Usuário não encontrado.');
     }
 
     return user;

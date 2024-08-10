@@ -14,6 +14,7 @@ import { UpdateAddressDto } from './dtos/updateAddress.dto';
 import { ReturnAddressDto } from './dtos/returnAddress.dto';
 import { Roles } from 'src/decorators/roles.decorator';
 import { UserType } from '../enum/userTyper.enum';
+import { UserId } from 'src/decorators/user-id.decorator';
 
 @Roles(UserType.USER)
 @Controller('address')
@@ -23,7 +24,7 @@ export class AddressController {
   @Post('/:userId')
   async createAddress(
     @Body() createAddressDto: CreateAddressDto,
-    @Param('userId') userId: number,
+    @UserId() userId: number,
   ): Promise<AddressEntity> {
     return this.addressService.createAddress(createAddressDto, userId);
   }
