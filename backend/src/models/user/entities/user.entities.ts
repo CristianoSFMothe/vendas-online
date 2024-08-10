@@ -1,5 +1,6 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -10,7 +11,7 @@ import { GenderType } from '../enum/user.enum';
 import { AddressEntity } from 'src/models/address/entities/address.entity';
 
 @Entity({ name: 'user' })
-@Unique(['email', 'cpf', 'rg'])
+@Unique(['email', 'cpf'])
 export class UserEntity {
   @PrimaryGeneratedColumn('rowid')
   id: number;
@@ -80,14 +81,6 @@ export class UserEntity {
   cpf: string;
 
   @Column({
-    name: 'rg',
-    type: 'varchar',
-    length: 12,
-    nullable: false,
-  })
-  rg: string;
-
-  @Column({
     name: 'password',
     type: 'varchar',
     length: 2500,
@@ -97,6 +90,9 @@ export class UserEntity {
 
   @Column({ name: 'type_user', nullable: false })
   typeUser: number;
+
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date;
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;

@@ -38,12 +38,6 @@ export class CreateTableUser1723255836106 implements MigrationInterface {
             isUnique: true,
           },
           {
-            name: 'rg',
-            type: 'varchar',
-            isNullable: false,
-            isUnique: true,
-          },
-          {
             name: 'type_user',
             type: 'int',
             isNullable: false,

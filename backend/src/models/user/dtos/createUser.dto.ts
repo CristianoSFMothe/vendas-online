@@ -32,9 +32,5 @@ export class CreateUserDto {
 
   @IsString()
   @IsNotEmpty()
-  rg: string;
-
-  @IsString()
-  @IsNotEmpty()
   password: string;
 }

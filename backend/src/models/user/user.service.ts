@@ -9,8 +9,8 @@ import { UserEntity } from './entities/user.entities';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dtos/createUser.dto';
 import { hash } from 'bcrypt';
-import { isValidCpf, isValidRg } from './utils/validation.utils';
-import { formatCpf, formatRg } from './utils/formatting.utils';
+import { isValidCpf } from './utils/isValidCpf.utils';
+import { formatCpf } from './utils/formatting.utils';
 import { calculateAge } from './utils/age.utils';
 import { ReturnsUserDto } from './dtos/returnUser.dto';
 
@@ -25,11 +25,6 @@ export class UserService {
     // Validação de CPF
     if (!isValidCpf(createUserDto.cpf)) {
       throw new BadRequestException('CPF inválido.');
-    }
-
-    // Validação de RG
-    if (!isValidRg(createUserDto.rg)) {
-      throw new BadRequestException('RG inválido.');
     }
 
     // Verificar se o email já está cadastrado
@@ -50,15 +45,6 @@ export class UserService {
       throw new ConflictException('CPF já cadastrado.');
     }
 
-    // Verificar se o RG já está cadastrado
-    const existingUserByRg = await this.userRepository.findOne({
-      where: { rg: createUserDto.rg },
-    });
-
-    if (existingUserByRg) {
-      throw new ConflictException('RG já cadastrado.');
-    }
-
     // Se as validações passarem, prosseguir com o hash da senha e salvar o usuário
     const saltOrRounds = 10;
     const passwordHashed = await hash(createUserDto.password, saltOrRounds);
@@ -67,13 +53,11 @@ export class UserService {
 
     // Formatação dos valores
     const formattedCpf = formatCpf(createUserDto.cpf);
-    const formattedRg = formatRg(createUserDto.rg);
 
     // Salva o usuário no banco de dados
     const user = await this.userRepository.save({
       ...createUserDto,
       cpf: formattedCpf,
-      rg: formattedRg,
       typeUser: 1,
       password: passwordHashed,
       age,

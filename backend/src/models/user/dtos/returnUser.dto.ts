@@ -11,7 +11,6 @@ export class ReturnsUserDto {
   gender: GenderType;
   dateOfBirth: string;
   cpf: string;
-  rg: string;
   age: number;
   addresses?: ReturnAddressDto[];
 
@@ -24,7 +23,6 @@ export class ReturnsUserDto {
     this.gender = user.gender;
     this.dateOfBirth = user.dateOfBirth;
     this.cpf = user.cpf;
-    this.rg = user.rg;
     this.age = user.age;
 
     this.addresses = user.addresses
