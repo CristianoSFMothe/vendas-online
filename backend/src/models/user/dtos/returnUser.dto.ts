@@ -1,3 +1,4 @@
+import { ReturnAddressDto } from 'src/models/address/dtos/returnAddress.dto';
 import { UserEntity } from '../entities/user.entities';
 import { GenderType } from '../enum/user.enum';
 
@@ -11,6 +12,7 @@ export class ReturnsUserDto {
   dateOfBirth: string;
   cpf: string;
   rg: string;
+  addresses?: ReturnAddressDto[];
 
   constructor(user: UserEntity) {
     this.id = user.id;
@@ -22,5 +24,9 @@ export class ReturnsUserDto {
     this.dateOfBirth = user.dateOfBirth;
     this.cpf = user.cpf;
     this.rg = user.rg;
+
+    this.addresses = user.addresses
+      ? user.addresses.map((address) => new ReturnAddressDto(address))
+      : undefined;
   }
 }
