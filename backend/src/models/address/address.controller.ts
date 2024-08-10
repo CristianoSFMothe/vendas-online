@@ -1,7 +1,17 @@
-import { Body, Controller, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { AddressService } from './address.service';
 import { AddressEntity } from './entities/address.entity';
 import { CreateAddressDto } from './dtos/createAddress.dto';
+import { UpdateAddressDto } from './dtos/updateAddress.dto';
+import { ReturnAddressDto } from './dtos/returnAddress.dto';
 
 @Controller('address')
 export class AddressController {
@@ -13,5 +23,27 @@ export class AddressController {
     @Param('userId') userId: number,
   ): Promise<AddressEntity> {
     return this.addressService.createAddress(createAddressDto, userId);
+  }
+
+  @Patch('/:id')
+  async updateAddress(
+    @Param('id') id: number,
+    @Body() updateAddressDto: UpdateAddressDto,
+    @Query('userId') userId: number,
+  ): Promise<ReturnAddressDto> {
+    const address = await this.addressService.updateAddress(
+      id,
+      updateAddressDto,
+      userId,
+    );
+    return new ReturnAddressDto(address);
+  }
+
+  @Delete('/:id')
+  async deleteAddress(
+    @Param('id') id: number,
+    @Query('userId') userId: number,
+  ): Promise<void> {
+    await this.addressService.deleteAddress(id, userId);
   }
 }

@@ -1,10 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AddressEntity } from './entities/address.entity';
 import { Repository } from 'typeorm';
 import { CreateAddressDto } from './dtos/createAddress.dto';
 import { UserService } from '../user/user.service';
 import { CityService } from '../city/city.service';
+import { UpdateAddressDto } from './dtos/updateAddress.dto';
 
 @Injectable()
 export class AddressService {
@@ -27,5 +32,40 @@ export class AddressService {
       ...createAddressDto,
       userId,
     });
+  }
+  async updateAddress(
+    id: number,
+    updateAddressDto: UpdateAddressDto,
+    userId: number,
+  ): Promise<AddressEntity> {
+    await this.userService.findUserById(userId); // Verificar se o usuário existe
+
+    const address = await this.addressRepository.findOneBy({ id });
+
+    if (!address) {
+      throw new NotFoundException('Endereço não encontrado.');
+    }
+
+    if (address.userId !== userId) {
+      throw new NotFoundException('O usuário não possui este endereço.');
+    }
+
+    const updatedAddress = Object.assign(address, updateAddressDto);
+
+    return this.addressRepository.save(updatedAddress);
+  }
+
+  async deleteAddress(id: number, userId: number): Promise<void> {
+    const address = await this.addressRepository.findOneBy({ id });
+
+    if (!address) {
+      throw new NotFoundException('Endereço não encontrado.');
+    }
+
+    if (address.userId !== userId) {
+      throw new ForbiddenException('O usuário não possui este endereço.');
+    }
+
+    await this.addressRepository.remove(address);
   }
 }
