@@ -1,5 +1,13 @@
-import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  Unique,
+  UpdateDateColumn,
+} from 'typeorm';
 import { GenderType } from '../enum/user.enum';
+import { AddressEntity } from 'src/models/address/entities/address.entity';
 
 @Entity({ name: 'user' })
 @Unique(['email', 'cpf', 'rg'])
@@ -89,4 +97,10 @@ export class UserEntity {
 
   @Column({ name: 'type_user', nullable: false })
   typeUser: number;
+
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt: Date;
+
+  @OneToMany(() => AddressEntity, (address) => address.user)
+  addresses?: AddressEntity[];
 }
