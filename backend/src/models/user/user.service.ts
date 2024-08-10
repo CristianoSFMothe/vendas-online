@@ -1,9 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entities';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dtos/createUser.dto';
 import { hash } from 'bcrypt';
+import { isValidCpf } from './utils/isValidCpf.utils';
+import { formatCpf } from './utils/formatting.utils';
+import { calculateAge } from './utils/age.utils';
+import { ReturnUserDto } from './dtos/returnUser.dto';
+import { UpdateUserDto } from './dtos/updateUser.dto';
 
 @Injectable()
 export class UserService {
@@ -12,19 +22,118 @@ export class UserService {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
-    const saltOrRounds = 10;
+  async createUser(createUserDto: CreateUserDto): Promise<ReturnUserDto> {
+    // Validação de CPF
+    if (!isValidCpf(createUserDto.cpf)) {
+      throw new BadRequestException('CPF inválido.');
+    }
 
+    // Verificar se o email já está cadastrado
+    const existingUserByEmail = await this.userRepository.findOne({
+      where: { email: createUserDto.email },
+    });
+
+    if (existingUserByEmail) {
+      throw new ConflictException('Email já cadastrado.');
+    }
+
+    // Verificar se o CPF já está cadastrado
+    const existingUserByCpf = await this.userRepository.findOne({
+      where: { cpf: createUserDto.cpf },
+    });
+
+    if (existingUserByCpf) {
+      throw new ConflictException('CPF já cadastrado.');
+    }
+
+    // Se as validações passarem, prosseguir com o hash da senha e salvar o usuário
+    const saltOrRounds = 10;
     const passwordHashed = await hash(createUserDto.password, saltOrRounds);
 
-    return this.userRepository.save({
+    const age = calculateAge(createUserDto.dateOfBirth);
+
+    // Formatação dos valores
+    const formattedCpf = formatCpf(createUserDto.cpf);
+
+    // Salva o usuário no banco de dados
+    const user = await this.userRepository.save({
       ...createUserDto,
+      cpf: formattedCpf,
       typeUser: 1,
       password: passwordHashed,
+      age,
+    });
+
+    return new ReturnUserDto(user);
+  }
+
+  async getAllUser(): Promise<UserEntity[]> {
+    return this.userRepository.find();
+  }
+
+  async findUserById(userId: number): Promise<UserEntity> {
+    const user = await this.userRepository.findOne({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado ou não existe.');
+    }
+
+    return user;
+  }
+
+  async getUserByIdUsingRelations(userId: number): Promise<UserEntity> {
+    return this.userRepository.findOne({
+      where: {
+        id: userId,
+      },
+      relations: {
+        addresses: {
+          city: {
+            state: true,
+          },
+        },
+      },
     });
   }
 
-  async getAlUser(): Promise<UserEntity[]> {
-    return this.userRepository.find();
+  async findUserByEmail(email: string): Promise<UserEntity> {
+    const user = await this.userRepository.findOne({
+      where: {
+        email,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('Usuário ou senha inválidos.');
+    }
+
+    return user;
+  }
+
+  async updateUser(
+    id: number,
+    updateUserDto: UpdateUserDto,
+  ): Promise<UserEntity> {
+    const user = await this.findUserById(id);
+
+    const updatedUser = Object.assign(user, updateUserDto);
+
+    return this.userRepository.save(updatedUser);
+  }
+
+  async deleteUserById(userId: number): Promise<void> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado.');
+    }
+
+    await this.userRepository.remove(user);
   }
 }

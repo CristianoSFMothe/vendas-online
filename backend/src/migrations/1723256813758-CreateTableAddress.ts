@@ -1,12 +1,10 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export class CreateTableUser1723255836106 implements MigrationInterface {
+export class CreateTableAddress1723256813758 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
-
     await queryRunner.createTable(
       new Table({
-        name: 'user',
+        name: 'address',
         columns: [
           {
             name: 'id',
@@ -16,58 +14,39 @@ export class CreateTableUser1723255836106 implements MigrationInterface {
             generationStrategy: 'increment',
           },
           {
-            name: 'name',
-            type: 'varchar',
-            isNullable: false,
-          },
-          {
-            name: 'surname',
-            type: 'varchar',
-            isNullable: false,
-          },
-          {
-            name: 'email',
-            type: 'varchar',
-            isNullable: false,
-            isUnique: true,
-          },
-          {
-            name: 'cpf',
-            type: 'varchar',
-            isNullable: false,
-            isUnique: true,
-          },
-          {
-            name: 'type_user',
+            name: 'user_id',
             type: 'int',
             isNullable: false,
           },
           {
-            name: 'phone',
+            name: 'complement',
             type: 'varchar',
             isNullable: true,
           },
           {
-            name: 'gender',
-            type: 'enum',
-            enum: ['MASCULINO', 'FEMININO', 'OUTRO'],
-            isNullable: true,
-            default: `'MASCULINO'`,
-          },
-          {
-            name: 'date_of_birth',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'age',
+            name: 'number',
             type: 'int',
-            isNullable: true,
+            isNullable: false,
           },
           {
-            name: 'password',
+            name: 'cep',
             type: 'varchar',
             isNullable: false,
+          },
+          {
+            name: 'city_id',
+            type: 'int',
+            isNullable: false,
+          },
+          {
+            name: 'street', // Novo campo para logradouro
+            type: 'varchar',
+            isNullable: true, // Permite nulo
+          },
+          {
+            name: 'neighborhood', // Novo campo para bairro
+            type: 'varchar',
+            isNullable: true, // Permite nulo
           },
           {
             name: 'created_at',
@@ -85,6 +64,6 @@ export class CreateTableUser1723255836106 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('user');
+    await queryRunner.dropTable('address');
   }
 }

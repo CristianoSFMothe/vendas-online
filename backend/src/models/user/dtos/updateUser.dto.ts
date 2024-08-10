@@ -1,34 +1,30 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import { GenderType } from '../enum/user.enum';
 
-export class CreateUserDto {
+export class UpdateUserDto {
   @IsString()
   @IsNotEmpty()
-  name: string;
+  name?: string;
 
   @IsString()
   @IsNotEmpty()
-  surname: string;
+  surname?: string;
 
   @IsString()
   @IsEmail()
-  email: string;
+  email?: string;
 
   @IsString()
   @IsNotEmpty()
-  phone: string;
+  phone?: string;
 
   @IsString()
   @IsNotEmpty()
-  gender: GenderType;
+  gender?: GenderType;
 
   @IsString()
   @IsNotEmpty()
-  dateOfBirth: string;
-
-  @IsString()
-  @IsNotEmpty()
-  cpf: string;
+  dateOfBirth?: string;
 
   @IsString()
   @IsNotEmpty()
