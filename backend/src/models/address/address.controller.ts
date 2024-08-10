@@ -12,9 +12,9 @@ import { AddressEntity } from './entities/address.entity';
 import { CreateAddressDto } from './dtos/createAddress.dto';
 import { UpdateAddressDto } from './dtos/updateAddress.dto';
 import { ReturnAddressDto } from './dtos/returnAddress.dto';
-import { Roles } from 'src/decorators/roles.decorator';
+import { Roles } from '../../decorators/roles.decorator';
 import { UserType } from '../enum/userTyper.enum';
-import { UserId } from 'src/decorators/user-id.decorator';
+import { UserId } from '../../decorators/user-id.decorator';
 
 @Roles(UserType.USER)
 @Controller('address')

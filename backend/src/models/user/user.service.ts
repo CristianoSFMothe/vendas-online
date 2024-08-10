@@ -23,12 +23,10 @@ export class UserService {
   ) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<ReturnUserDto> {
-    // Validação de CPF
     if (!isValidCpf(createUserDto.cpf)) {
       throw new BadRequestException('CPF inválido.');
     }
 
-    // Verificar se o email já está cadastrado
     const existingUserByEmail = await this.findUserByEmail(
       createUserDto.email,
     ).catch(() => undefined);
@@ -37,7 +35,6 @@ export class UserService {
       throw new ConflictException('Email já cadastrado.');
     }
 
-    // Verificar se o CPF já está cadastrado
     const existingUserByCpf = await this.userRepository.findOne({
       where: { cpf: createUserDto.cpf },
     });
@@ -46,16 +43,13 @@ export class UserService {
       throw new ConflictException('CPF já cadastrado.');
     }
 
-    // Se as validações passarem, prosseguir com o hash da senha e salvar o usuário
     const saltOrRounds = 10;
     const passwordHashed = await hash(createUserDto.password, saltOrRounds);
 
     const age = calculateAge(createUserDto.dateOfBirth);
 
-    // Formatação dos valores
     const formattedCpf = formatCpf(createUserDto.cpf);
 
-    // Salva o usuário no banco de dados
     const user = await this.userRepository.save({
       ...createUserDto,
       cpf: formattedCpf,
@@ -86,10 +80,8 @@ export class UserService {
   }
 
   async getUserByIdUsingRelations(userId: number): Promise<UserEntity> {
-    return this.userRepository.findOne({
-      where: {
-        id: userId,
-      },
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
       relations: {
         addresses: {
           city: {
@@ -98,6 +90,12 @@ export class UserService {
         },
       },
     });
+
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado.');
+    }
+
+    return user;
   }
 
   async findUserByEmail(email: string): Promise<UserEntity> {
@@ -118,10 +116,18 @@ export class UserService {
     id: number,
     updateUserDto: UpdateUserDto,
   ): Promise<UserEntity> {
+    // Busca o usuário pelo ID
     const user = await this.findUserById(id);
 
+    // Lança uma exceção se o usuário não for encontrado
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado.');
+    }
+
+    // Atualiza o usuário com os dados fornecidos
     const updatedUser = Object.assign(user, updateUserDto);
 
+    // Salva e retorna o usuário atualizado
     return this.userRepository.save(updatedUser);
   }
 
