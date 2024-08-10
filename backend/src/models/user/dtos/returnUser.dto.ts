@@ -12,6 +12,7 @@ export class ReturnsUserDto {
   dateOfBirth: string;
   cpf: string;
   rg: string;
+  age: number;
   addresses?: ReturnAddressDto[];
 
   constructor(user: UserEntity) {
@@ -24,6 +25,7 @@ export class ReturnsUserDto {
     this.dateOfBirth = user.dateOfBirth;
     this.cpf = user.cpf;
     this.rg = user.rg;
+    this.age = user.age;
 
     this.addresses = user.addresses
       ? user.addresses.map((address) => new ReturnAddressDto(address))

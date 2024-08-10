@@ -56,9 +56,9 @@ export class CreateTableUser1723255836106 implements MigrationInterface {
           {
             name: 'gender',
             type: 'enum',
-            enum: ['MALE', 'FEMALE', 'OTHER'],
+            enum: ['MASCULINO', 'FEMININO', 'OUTRO'],
             isNullable: true,
-            default: `'MALE'`,
+            default: `'MASCULINO'`,
           },
           {
             name: 'date_of_birth',

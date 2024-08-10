@@ -13,12 +13,23 @@ export class ValidationExceptionFilter implements ExceptionFilter {
     const status = exception.getStatus();
     const exceptionResponse = exception.getResponse() as any;
 
-    const translatedMessages = exceptionResponse.message.map((msg: string) => {
-      if (msg.startsWith('property')) {
-        return 'Propriedade adicional não permitida.';
-      }
-      return msg;
-    });
+    let translatedMessages: string[] = [];
+
+    // Verifica se exceptionResponse.message é um array
+    if (Array.isArray(exceptionResponse.message)) {
+      translatedMessages = exceptionResponse.message.map((msg: string) => {
+        if (msg.startsWith('property')) {
+          return 'Propriedade adicional não permitida.';
+        }
+        return msg;
+      });
+    } else if (typeof exceptionResponse.message === 'string') {
+      // Caso a mensagem seja uma string, coloque-a em um array
+      translatedMessages = [exceptionResponse.message];
+    } else {
+      // Caso a mensagem seja um objeto ou outro tipo
+      translatedMessages = ['Erro de validação desconhecido.'];
+    }
 
     response.status(status).json({
       statusCode: status,
