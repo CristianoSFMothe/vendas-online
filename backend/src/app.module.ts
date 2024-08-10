@@ -6,6 +6,9 @@ import { StateModule } from './models/state/state.module';
 import { AddressModule } from './models/address/address.module';
 import { CacheModule } from './cache/cache.module';
 import { AuthModule } from './models/auth/auth.module';
+import { APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from './guards/roles.guard';
+import { JwtModule } from '@nestjs/jwt';
 @Module({
   imports: [
     DatabaseModule,
@@ -15,8 +18,14 @@ import { AuthModule } from './models/auth/auth.module';
     AddressModule,
     CacheModule,
     AuthModule,
+    JwtModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+  ],
 })
 export class AppModule {}

@@ -12,7 +12,10 @@ import { AddressEntity } from './entities/address.entity';
 import { CreateAddressDto } from './dtos/createAddress.dto';
 import { UpdateAddressDto } from './dtos/updateAddress.dto';
 import { ReturnAddressDto } from './dtos/returnAddress.dto';
+import { Roles } from 'src/decorators/roles.decorator';
+import { UserType } from '../enum/userTyper.enum';
 
+@Roles(UserType.USER)
 @Controller('address')
 export class AddressController {
   constructor(private readonly addressService: AddressService) {}
