@@ -13,6 +13,7 @@ import { isValidCpf } from './utils/isValidCpf.utils';
 import { formatCpf } from './utils/formatting.utils';
 import { calculateAge } from './utils/age.utils';
 import { ReturnUserDto } from './dtos/returnUser.dto';
+import { UpdateUserDto } from './dtos/updateUser.dto';
 
 @Injectable()
 export class UserService {
@@ -111,5 +112,28 @@ export class UserService {
     }
 
     return user;
+  }
+
+  async updateUser(
+    id: number,
+    updateUserDto: UpdateUserDto,
+  ): Promise<UserEntity> {
+    const user = await this.findUserById(id);
+
+    const updatedUser = Object.assign(user, updateUserDto);
+
+    return this.userRepository.save(updatedUser);
+  }
+
+  async deleteUserById(userId: number): Promise<void> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado.');
+    }
+
+    await this.userRepository.remove(user);
   }
 }
