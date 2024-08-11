@@ -11,7 +11,7 @@ export const userEntityMock: UserEntity = {
   dateOfBirth: '01/01/2000',
   age: 24,
   email: 'emailmock@emali.com',
-  password: 'largePassword',
+  password: '$2b$10$S62WmVpIxL52Z.0y22DWfuaAz8.XUNESChWP.AlMFZnOJ9n9uiqi.',
   phone: '321532523532',
   typeUser: UserType.USER,
   createdAt: new Date(),

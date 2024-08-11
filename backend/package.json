@@ -19,7 +19,16 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "test:userService": "npm run test src/models/user/__tests__/user.service.spec.ts",
-    "test:userController": "npm run test src/models/user/__tests__/user.controller.spec.ts"
+    "test:userController": "npm run test src/models/user/__tests__/user.controller.spec.ts",
+    "test:stateService": "npm run test src/models/state/__tests__/state.service.spec.ts",
+    "test:stateController": "npm run test src/models/state/__tests__/state.controller.spec.ts",
+    "test:cityService": "npm run test src/models/city/__tests__/city.service.spec.ts",
+    "test:cityController": "npm run test src/models/city/__tests__/city.controller.spec.ts",
+    "test:authService": "npm run test src/models/auth/__tests__/auth.service.spec.ts",
+    "test:authController": "npm run test src/models/auth/__tests__/auth.controller.spec.ts",
+    "test:serviceCache": "npm run test src/cache/__tests__/cache.service.spec.ts",
+    "test:serviceAddress": "npm run test src/models/address/__tests__/address.service.spec.ts",
+    "test:controllerAddress": "npm run test src/models/address/__tests__/address.controller.spec.ts"
   },
   "dependencies": {
     "@nestjs/axios": "^2.0.0",
