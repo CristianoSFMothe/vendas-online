@@ -8,6 +8,7 @@ import { UserService } from '../../../models/user/user.service';
 import { CityService } from '../../../models/city/city.service';
 import { createAddressDtoMock } from '../__mocks__/createAddress.mock';
 import { updateAddressDtoMock } from '../__mocks__/updateAddress.mock';
+import { userEntityMock } from '../../../models/user/__mocks__/user.mock';
 
 describe('AddressService', () => {
   let service: AddressService;
@@ -22,6 +23,8 @@ describe('AddressService', () => {
           useValue: {
             save: jest.fn().mockResolvedValue(addressMock),
             findOneBy: jest.fn().mockResolvedValue(addressMock),
+            find: jest.fn().mockResolvedValue([addressMock]),
+            update: jest.fn().mockResolvedValue(addressMock),
             remove: jest.fn().mockResolvedValue(undefined),
           },
         },
@@ -54,6 +57,22 @@ describe('AddressService', () => {
         ...createAddressDtoMock,
         userId: 1,
       });
+    });
+  });
+
+  describe('getAllAddress', () => {
+    it('should return all addresses to user', async () => {
+      const addresses = await service.findAllAddressByUserId(userEntityMock.id);
+
+      expect(addresses).toEqual([addressMock]);
+    });
+
+    it('should return not found if not address registred', async () => {
+      jest.spyOn(addressRepository, 'find').mockReturnValue(undefined);
+
+      expect(
+        service.findAllAddressByUserId(userEntityMock.id),
+      ).rejects.toThrowError();
     });
   });
 

@@ -33,6 +33,26 @@ export class AddressService {
       userId,
     });
   }
+
+  async findAllAddressByUserId(userId: number): Promise<AddressEntity[]> {
+    const address = await this.addressRepository.find({
+      where: {
+        userId,
+      },
+      relations: {
+        city: {
+          state: true,
+        },
+      },
+    });
+
+    if (!address || address.length === 0) {
+      throw new NotFoundException('Nenhum endereço não encontrado.');
+    }
+
+    return address;
+  }
+
   async updateAddress(
     id: number,
     updateAddressDto: UpdateAddressDto,

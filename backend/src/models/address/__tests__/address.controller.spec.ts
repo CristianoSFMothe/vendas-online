@@ -18,6 +18,7 @@ describe('AddressController', () => {
           provide: AddressService,
           useValue: {
             createAddress: jest.fn().mockResolvedValue(addressMock),
+            findAllAddressByUserId: jest.fn().mockResolvedValue([addressMock]),
             updateAddress: jest.fn().mockResolvedValue(addressMock),
             deleteAddress: jest.fn().mockResolvedValue(undefined),
           },
@@ -37,6 +38,15 @@ describe('AddressController', () => {
         createAddressDtoMock,
         1,
       );
+    });
+  });
+
+  describe('findAllAddressByUserId', () => {
+    it('should return an array of ReturnAddressDto', async () => {
+      const result = await controller.findAllAddressByUserId(1);
+
+      expect(result).toEqual([new ReturnAddressDto(addressMock)]);
+      expect(service.findAllAddressByUserId).toHaveBeenCalledWith(1);
     });
   });
 

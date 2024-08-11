@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Param,
   Patch,
   Post,
@@ -16,11 +17,11 @@ import { Roles } from '../../decorators/roles.decorator';
 import { UserType } from '../enum/userTyper.enum';
 import { UserId } from '../../decorators/user-id.decorator';
 
-@Roles(UserType.USER)
 @Controller('address')
 export class AddressController {
   constructor(private readonly addressService: AddressService) {}
 
+  @Roles(UserType.USER)
   @Post('/:userId')
   async createAddress(
     @Body() createAddressDto: CreateAddressDto,
@@ -29,6 +30,17 @@ export class AddressController {
     return this.addressService.createAddress(createAddressDto, userId);
   }
 
+  @Roles(UserType.USER, UserType.ADMIN)
+  @Get()
+  async findAllAddressByUserId(
+    @UserId() userId: number,
+  ): Promise<ReturnAddressDto[]> {
+    return (await this.addressService.findAllAddressByUserId(userId)).map(
+      (address) => new ReturnAddressDto(address),
+    );
+  }
+
+  @Roles(UserType.USER)
   @Patch('/:id')
   async updateAddress(
     @Param('id') id: number,
@@ -43,6 +55,7 @@ export class AddressController {
     return new ReturnAddressDto(address);
   }
 
+  @Roles(UserType.USER, UserType.ADMIN)
   @Delete('/:id')
   async deleteAddress(
     @Param('id') id: number,
