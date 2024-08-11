@@ -13,16 +13,34 @@ export class StateEntity {
   @PrimaryGeneratedColumn('rowid')
   id: number;
 
-  @Column({ name: 'name', nullable: false })
+  @Column({
+    name: 'name',
+    type: 'varchar',
+    length: 100,
+    nullable: false,
+  })
   name: string;
 
-  @Column({ name: 'uf', nullable: false })
+  @Column({
+    name: 'uf',
+    type: 'char',
+    length: 2,
+    nullable: false,
+  })
   uf: string;
 
-  @CreateDateColumn({ name: 'created_at' })
+  @CreateDateColumn({
+    name: 'created_at',
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   createdAt: Date;
 
-  @UpdateDateColumn({ name: 'updated_at' })
+  @UpdateDateColumn({
+    name: 'updated_at',
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   updatedAt: Date;
 
   @OneToMany(() => CityEntity, (city) => city.state)
