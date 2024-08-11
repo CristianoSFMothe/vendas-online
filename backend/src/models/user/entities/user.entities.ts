@@ -8,7 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { GenderType } from '../enum/user.enum';
-import { AddressEntity } from 'src/models/address/entities/address.entity';
+import { AddressEntity } from '../../../models/address/entities/address.entity';
 
 @Entity({ name: 'user' })
 @Unique(['email', 'cpf'])

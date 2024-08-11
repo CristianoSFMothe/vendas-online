@@ -35,6 +35,11 @@ export class UserController {
     );
   }
 
+  @Get(':id')
+  async findUserById(@Param('id') id: number): Promise<ReturnUserDto> {
+    return this.userService.findUserById(id);
+  }
+
   @Patch('/:id')
   async updateUser(
     @Param('id') id: number,
