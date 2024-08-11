@@ -116,18 +116,14 @@ export class UserService {
     id: number,
     updateUserDto: UpdateUserDto,
   ): Promise<UserEntity> {
-    // Busca o usuário pelo ID
     const user = await this.findUserById(id);
 
-    // Lança uma exceção se o usuário não for encontrado
     if (!user) {
       throw new NotFoundException('Usuário não encontrado.');
     }
 
-    // Atualiza o usuário com os dados fornecidos
     const updatedUser = Object.assign(user, updateUserDto);
 
-    // Salva e retorna o usuário atualizado
     return this.userRepository.save(updatedUser);
   }
 

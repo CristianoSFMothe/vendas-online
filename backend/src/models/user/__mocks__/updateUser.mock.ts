@@ -9,5 +9,4 @@ export const updateUserMock: Partial<UserEntity> = {
   dateOfBirth: '01/01/1990',
   email: 'updatedemail@emali.com',
   phone: '321532523533',
-  // Note: Não inclua campos que não sejam atualizáveis no mock
 };
