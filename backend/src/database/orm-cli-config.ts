@@ -6,6 +6,8 @@ import { CreateTableCity1723256808767 } from '../migrations/1723256808767-Create
 import { CreateTableState1723256818795 } from '../migrations/1723256818795-CreateTableState';
 import { InsertCities1723257734926 } from '../migrations/1723257734926-InsertCities';
 import { InsertStates1723257740033 } from '../migrations/1723257740033-InsertStates';
+import { CreateTableCategory1723347278125 } from '../migrations/1723347278125-CreateTableCategory';
+import { CreateTableProduct1723347289529 } from '../migrations/1723347289529-CreateTableProduct';
 
 export const dataSource = new DataSource({
   ...dataSourceOptions,
@@ -17,6 +19,8 @@ export const dataSource = new DataSource({
     CreateTableState1723256818795,
     InsertCities1723257734926,
     InsertStates1723257740033,
+    CreateTableCategory1723347278125,
+    CreateTableProduct1723347289529,
   ],
   logging: true,
 });
