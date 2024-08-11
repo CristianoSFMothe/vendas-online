@@ -13,6 +13,7 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "migration:run": "npx typeorm migration:run -d dist/database/orm-cli-config.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
@@ -28,7 +29,10 @@
     "test:authController": "npm run test src/models/auth/__tests__/auth.controller.spec.ts",
     "test:serviceCache": "npm run test src/cache/__tests__/cache.service.spec.ts",
     "test:serviceAddress": "npm run test src/models/address/__tests__/address.service.spec.ts",
-    "test:controllerAddress": "npm run test src/models/address/__tests__/address.controller.spec.ts"
+    "test:controllerAddress": "npm run test src/models/address/__tests__/address.controller.spec.ts",
+    "test:serviceCategory": "npm run test src/models/category/__tests__/category.service.spec.ts",
+    "test:controllerCategory": "npm run test src/models/category/__tests__/category.controller.spec.ts"
+    
   },
   "dependencies": {
     "@nestjs/axios": "^2.0.0",
