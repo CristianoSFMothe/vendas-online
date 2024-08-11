@@ -1,4 +1,4 @@
-import { UserType } from '../../../models/enum/userTyper.enum';
+import { UserType } from '../../../enum/userTyper.enum';
 import { UserEntity } from '../entities/user.entities';
 import { GenderType } from '../enum/user.enum';
 
