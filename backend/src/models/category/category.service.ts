@@ -14,7 +14,7 @@ export class CategoryService {
     const categories = await this.categoryRepository.find();
 
     if (!categories || categories.length === 0) {
-      throw new NotFoundException('Nenhuma categoria encontrada');
+      throw new NotFoundException('Nenhuma categoria encontrada.');
     }
 
     return categories;

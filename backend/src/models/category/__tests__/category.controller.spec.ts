@@ -2,8 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CategoryController } from '../category.controller';
 import { CategoryService } from '../category.service';
 import { CategoryMock } from '../__mocks__/category.mock';
-import { ReturnCategoryDto } from '../dtos/returnCategory.dto';
-import { CategoryEntity } from '../entities/category.entity';
 
 describe('CategoryController', () => {
   let categoryController: CategoryController;

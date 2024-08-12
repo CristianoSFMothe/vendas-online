@@ -11,7 +11,6 @@ import { RolesGuard } from './guards/roles.guard';
 import { JwtModule } from '@nestjs/jwt';
 import { ProductModule } from './models/product/product.module';
 import { CategoryService } from './models/category/category.service';
-import { CategoryController } from './models/category/category.controller';
 import { CategoryModule } from './models/category/category.module';
 @Module({
   imports: [
@@ -26,7 +25,7 @@ import { CategoryModule } from './models/category/category.module';
     CategoryModule,
     ProductModule,
   ],
-  controllers: [CategoryController],
+  controllers: [],
   providers: [
     {
       provide: APP_GUARD,
