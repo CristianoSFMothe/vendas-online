@@ -14,6 +14,7 @@ import { formatCpf } from './utils/formatting.utils';
 import { calculateAge } from './utils/age.utils';
 import { ReturnUserDto } from './dtos/returnUser.dto';
 import { UpdateUserDto } from './dtos/updateUser.dto';
+import { UserType } from '../../enum/userType.enum';
 
 @Injectable()
 export class UserService {
@@ -53,7 +54,7 @@ export class UserService {
     const user = await this.userRepository.save({
       ...createUserDto,
       cpf: formattedCpf,
-      typeUser: 1,
+      typeUser: UserType.USER,
       password: passwordHashed,
       age,
     });

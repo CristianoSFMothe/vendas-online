@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { CategoryEntity } from '../entities/category.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { CategoryMock } from '../__mocks__/category.mock';
+import { CreateCategoryMock } from '../__mocks__/createCategory.mock';
 
 describe('CategoryService', () => {
   let service: CategoryService;
@@ -52,5 +53,17 @@ describe('CategoryService', () => {
 
       expect(service.findAllCategories()).rejects.toThrowError();
     });
+  });
+
+  it('should return category after save', async () => {
+    const category = await service.createCategory(CreateCategoryMock);
+
+    expect(category).toEqual(CategoryMock);
+  });
+
+  it('should return erro in exception', async () => {
+    jest.spyOn(categoryRepository, 'save').mockRejectedValue(new Error());
+
+    expect(service.createCategory(CreateCategoryMock)).rejects.toThrowError();
   });
 });
