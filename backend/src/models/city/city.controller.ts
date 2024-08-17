@@ -9,6 +9,7 @@ import { UserType } from '../../enum/userType.enum';
 export class CityController {
   constructor(private readonly cityService: CityService) {}
 
+  @Roles(UserType.ADMIN, UserType.USER)
   @Get('/:stateId')
   async getAllCitiesByStateId(
     @Param('stateId') stateId: number,

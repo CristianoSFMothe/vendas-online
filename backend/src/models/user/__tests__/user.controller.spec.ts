@@ -76,13 +76,10 @@ describe('UserController', () => {
         .spyOn(userService, 'findUserById')
         .mockResolvedValueOnce(userEntityMock);
 
-      // Executa o método do controlador
       const result = await userController.findUserById(userEntityMock.id);
 
-      // Cria um DTO esperado a partir do mock
       const expected = new ReturnUserDto(userEntityMock);
 
-      // Comparando campos individualmente
       expect(result.id).toBe(expected.id);
       expect(result.name).toBe(expected.name);
       expect(result.surname).toBe(expected.surname);
@@ -92,7 +89,7 @@ describe('UserController', () => {
       expect(result.email).toBe(expected.email);
       expect(result.phone).toBe(expected.phone);
       expect(result.age).toBe(expected.age);
-      // Verifica se o método do serviço foi chamado com o ID correto
+
       expect(userService.findUserById).toHaveBeenCalledWith(userEntityMock.id);
     });
   });
