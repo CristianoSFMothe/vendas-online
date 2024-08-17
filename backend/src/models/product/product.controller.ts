@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Post } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { ReturnProductDto } from './dtos/returnProduct.dto';
 import { Roles } from '../../decorators/roles.decorator';
@@ -24,5 +24,12 @@ export class ProductController {
     @Body() createProduct: CreateProductDto,
   ): Promise<ProductEntity> {
     return this.productService.createProduct(createProduct);
+  }
+
+  @Get('search')
+  async findProductByName(
+    @Headers('product-name') productName: string,
+  ): Promise<ProductEntity[]> {
+    return this.productService.findProductByName(productName);
   }
 }

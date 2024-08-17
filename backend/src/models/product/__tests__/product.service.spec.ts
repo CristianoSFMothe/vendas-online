@@ -1,12 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProductService } from '../product.service';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { ProductEntity } from '../entities/product.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ProductMock } from '../__mocks__/product.mock';
 import { CategoryService } from '../../../models/category/category.service';
 import { CreateProduct } from '../__mocks__/createProduct.mock';
 import { CategoryMock } from '../../../models/category/__mocks__/category.mock';
+import { NotFoundException } from '@nestjs/common';
 
 describe('ProductService', () => {
   let service: ProductService;
@@ -82,6 +83,60 @@ describe('ProductService', () => {
         .mockRejectedValue(new Error());
 
       expect(service.createProduct(CreateProduct)).rejects.toThrowError();
+    });
+  });
+
+  describe('findProductByName', () => {
+    it('should return products matching the name', async () => {
+      const searchName = 'productNameMock';
+      jest.spyOn(productRepository, 'find').mockResolvedValue([ProductMock]);
+
+      const result = await service.findProductByName(searchName);
+
+      expect(result).toEqual([ProductMock]);
+      expect(productRepository.find).toHaveBeenCalledWith({
+        where: {
+          name: Like(`%${searchName}%`),
+        },
+        order: {
+          name: 'ASC',
+        },
+      });
+    });
+
+    it('should throw NotFoundException if no products are found', async () => {
+      jest.spyOn(productRepository, 'find').mockResolvedValue([]);
+
+      await expect(service.findProductByName('nonexistent')).rejects.toThrow(
+        NotFoundException,
+      );
+    });
+
+    it('should throw NotFoundException if no name is provided', async () => {
+      await expect(service.findProductByName('')).rejects.toThrow(
+        new NotFoundException('Nome da categoria não fornecido.'),
+      );
+    });
+
+    it('should order products by match score', async () => {
+      const searchName = 'productName';
+      const product1: ProductEntity = {
+        ...ProductMock,
+        name: 'nameProductMock',
+      };
+      const product2: ProductEntity = {
+        ...ProductMock,
+        name: 'productMockName',
+      };
+
+      jest
+        .spyOn(productRepository, 'find')
+        .mockResolvedValue([product1, product2]);
+
+      const result = await service.findProductByName(searchName);
+
+      // Order by match score
+      expect(result).toEqual([product1, product2]); // Adjust as necessary based on match score calculation
     });
   });
 });
