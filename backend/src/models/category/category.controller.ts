@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { ReturnCategoryDto } from './dtos/returnCategory.dto';
@@ -34,11 +35,16 @@ export class CategoryController {
   }
 
   @Roles(UserType.USER, UserType.ADMIN)
-  @Get('/:categoryName')
-  async findOneCategoryByName(
-    @Param('name') name: string,
-  ): Promise<CategoryEntity> {
-    return this.categoryService.findOneCategoryByName(name);
+  @Get('search')
+  async findCategoryByName(
+    @Query('name') name: string,
+  ): Promise<CategoryEntity[]> {
+    return this.categoryService.findCategoryByName(name);
+  }
+
+  @Get(':id')
+  async findCategoryById(@Param('id') id: number): Promise<CategoryEntity> {
+    return this.categoryService.findCategoryById(id);
   }
 
   @Roles(UserType.ADMIN)

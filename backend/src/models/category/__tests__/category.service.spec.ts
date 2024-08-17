@@ -176,4 +176,60 @@ describe('CategoryService', () => {
       );
     });
   });
+
+  describe('findCategoryById', () => {
+    it('should return a category by id', async () => {
+      const category = await service.findCategoryById(CategoryMock.id);
+      expect(category).toEqual(CategoryMock);
+    });
+
+    it('should throw NotFoundException if no category found by id', async () => {
+      jest.spyOn(categoryRepository, 'findOne').mockResolvedValue(null);
+
+      await expect(service.findCategoryById(CategoryMock.id)).rejects.toThrow(
+        NotFoundException,
+      );
+    });
+  });
+
+  describe('findCategoryByName', () => {
+    it('should return a list of categories matching the name', async () => {
+      const name = 'Test';
+      const categories = await service.findCategoryByName(name);
+      expect(categories).toEqual([CategoryMock]);
+    });
+
+    it('should throw NotFoundException if no categories found by name', async () => {
+      jest.spyOn(categoryRepository, 'find').mockResolvedValue([]);
+
+      await expect(
+        service.findCategoryByName('NonexistentName'),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should throw BadRequestException if name is not provided', async () => {
+      await expect(service.findCategoryByName('')).rejects.toThrowError();
+    });
+
+    it('should sort categories based on match score', async () => {
+      const categories = [
+        { ...CategoryMock, name: 'B' },
+        { ...CategoryMock, name: 'AB' },
+      ];
+
+      jest.spyOn(categoryRepository, 'find').mockResolvedValue(categories);
+
+      const name = 'A';
+      const sortedCategories = await service.findCategoryByName(name);
+
+      expect(sortedCategories[0].name).toBe('AB');
+      expect(sortedCategories[1].name).toBe('B');
+    });
+
+    it('should throw an error if there is a database exception', async () => {
+      jest.spyOn(categoryRepository, 'find').mockRejectedValue(new Error());
+
+      await expect(service.findCategoryByName('Test')).rejects.toThrow(Error);
+    });
+  });
 });

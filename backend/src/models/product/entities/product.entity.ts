@@ -23,14 +23,14 @@ export class ProductEntity {
   name: string;
 
   @Column({
-    name: 'name',
+    name: 'price',
     type: 'double precision',
     nullable: false,
   })
   price: number;
 
   @Column({
-    name: 'name',
+    name: 'image',
     type: 'varchar',
     length: 255,
     nullable: false,
@@ -38,7 +38,7 @@ export class ProductEntity {
   image: string;
 
   @Column({
-    name: 'name',
+    name: 'category_id',
     type: 'int',
     nullable: false,
   })
