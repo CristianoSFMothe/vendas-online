@@ -14,7 +14,7 @@ import { CreateAddressDto } from './dtos/createAddress.dto';
 import { UpdateAddressDto } from './dtos/updateAddress.dto';
 import { ReturnAddressDto } from './dtos/returnAddress.dto';
 import { Roles } from '../../decorators/roles.decorator';
-import { UserType } from '../../enum/userTyper.enum';
+import { UserType } from '../../enum/userType.enum';
 import { UserId } from '../../decorators/user-id.decorator';
 
 @Controller('address')
@@ -45,7 +45,7 @@ export class AddressController {
   async updateAddress(
     @Param('id') id: number,
     @Body() updateAddressDto: UpdateAddressDto,
-    @Query('userId') userId: number,
+    @UserId() userId: number,
   ): Promise<ReturnAddressDto> {
     const address = await this.addressService.updateAddress(
       id,

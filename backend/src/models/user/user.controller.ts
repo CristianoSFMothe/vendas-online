@@ -11,6 +11,8 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dtos/createUser.dto';
 import { ReturnUserDto } from './dtos/returnUser.dto';
 import { UpdateUserDto } from './dtos/updateUser.dto';
+import { Roles } from '../../decorators/roles.decorator';
+import { UserType } from '../../enum/userType.enum';
 
 @Controller('user')
 export class UserController {
@@ -21,6 +23,7 @@ export class UserController {
     return this.userService.createUser(createUser);
   }
 
+  @Roles(UserType.USER)
   @Get()
   async getAllUser(): Promise<ReturnUserDto[]> {
     return (await this.userService.getAllUser()).map(
@@ -28,6 +31,7 @@ export class UserController {
     );
   }
 
+  @Roles(UserType.USER, UserType.ADMIN)
   @Get('/:userId')
   async getUserById(@Param('userId') userId: number): Promise<ReturnUserDto> {
     return new ReturnUserDto(
@@ -35,11 +39,13 @@ export class UserController {
     );
   }
 
+  @Roles(UserType.USER, UserType.ADMIN)
   @Get(':id')
   async findUserById(@Param('id') id: number): Promise<ReturnUserDto> {
     return this.userService.findUserById(id);
   }
 
+  @Roles(UserType.USER, UserType.ADMIN)
   @Patch('/:id')
   async updateUser(
     @Param('id') id: number,
@@ -49,6 +55,7 @@ export class UserController {
     return new ReturnUserDto(user);
   }
 
+  @Roles(UserType.ADMIN)
   @Delete('/:id')
   async deleteUser(@Param('id') id: number): Promise<void> {
     await this.userService.deleteUserById(id);

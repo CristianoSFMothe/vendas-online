@@ -1,4 +1,4 @@
-import { CategoryEntity } from 'src/models/category/entities/category.entity';
+import { CategoryEntity } from '../../../models/category/entities/category.entity';
 import {
   Column,
   CreateDateColumn,
@@ -23,14 +23,14 @@ export class ProductEntity {
   name: string;
 
   @Column({
-    name: 'name',
+    name: 'price',
     type: 'double precision',
     nullable: false,
   })
   price: number;
 
   @Column({
-    name: 'name',
+    name: 'image',
     type: 'varchar',
     length: 255,
     nullable: false,
@@ -38,11 +38,11 @@ export class ProductEntity {
   image: string;
 
   @Column({
-    name: 'name',
+    name: 'category_id',
     type: 'int',
     nullable: false,
   })
-  categoryId: string;
+  categoryId: number;
 
   @CreateDateColumn({
     name: 'created_at',

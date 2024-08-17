@@ -43,66 +43,80 @@ describe('UserController', () => {
     expect(userService).toBeDefined();
   });
 
-  it('should create a user', async () => {
-    const result = await userController.createUser(createUserMock);
-    expect(result).toEqual(new ReturnUserDto(userEntityMock));
-    expect(userService.createUser).toHaveBeenCalledWith(createUserMock);
+  describe('createUser', () => {
+    it('should create a user', async () => {
+      const result = await userController.createUser(createUserMock);
+      expect(result).toEqual(new ReturnUserDto(userEntityMock));
+      expect(userService.createUser).toHaveBeenCalledWith(createUserMock);
+    });
   });
 
-  it('should return all users', async () => {
-    const result = await userController.getAllUser();
-    expect(result).toEqual([new ReturnUserDto(userEntityMock)]);
-    expect(userService.getAllUser).toHaveBeenCalled();
+  describe('getAllUser', () => {
+    it('should return all users', async () => {
+      const result = await userController.getAllUser();
+      expect(result).toEqual([new ReturnUserDto(userEntityMock)]);
+      expect(userService.getAllUser).toHaveBeenCalled();
+    });
   });
 
-  it('should return a user by ID', async () => {
-    const result = await userController.getUserById(userEntityMock.id);
-    expect(result).toEqual(new ReturnUserDto(userEntityMock));
-    expect(userService.getUserByIdUsingRelations).toHaveBeenCalledWith(
-      userEntityMock.id,
-    );
+  describe('getUserByIdUsingRelations', () => {
+    it('should return a user by ID', async () => {
+      const result = await userController.getUserById(userEntityMock.id);
+      expect(result).toEqual(new ReturnUserDto(userEntityMock));
+      expect(userService.getUserByIdUsingRelations).toHaveBeenCalledWith(
+        userEntityMock.id,
+      );
+    });
   });
 
-  it('should find a user by ID', async () => {
-    // Mock do serviço para retornar um usuário
-    jest
-      .spyOn(userService, 'findUserById')
-      .mockResolvedValueOnce(userEntityMock);
+  describe('findUserById', () => {
+    it('should find a user by ID', async () => {
+      // Mock do serviço para retornar um usuário
+      jest
+        .spyOn(userService, 'findUserById')
+        .mockResolvedValueOnce(userEntityMock);
 
-    // Executa o método do controlador
-    const result = await userController.findUserById(userEntityMock.id);
+      // Executa o método do controlador
+      const result = await userController.findUserById(userEntityMock.id);
 
-    // Cria um DTO esperado a partir do mock
-    const expected = new ReturnUserDto(userEntityMock);
+      // Cria um DTO esperado a partir do mock
+      const expected = new ReturnUserDto(userEntityMock);
 
-    // Comparando campos individualmente
-    expect(result.id).toBe(expected.id);
-    expect(result.name).toBe(expected.name);
-    expect(result.surname).toBe(expected.surname);
-    expect(result.cpf).toBe(expected.cpf);
-    expect(result.gender).toBe(expected.gender);
-    expect(result.dateOfBirth).toBe(expected.dateOfBirth);
-    expect(result.email).toBe(expected.email);
-    expect(result.phone).toBe(expected.phone);
-    expect(result.age).toBe(expected.age);
-    // Verifica se o método do serviço foi chamado com o ID correto
-    expect(userService.findUserById).toHaveBeenCalledWith(userEntityMock.id);
+      // Comparando campos individualmente
+      expect(result.id).toBe(expected.id);
+      expect(result.name).toBe(expected.name);
+      expect(result.surname).toBe(expected.surname);
+      expect(result.cpf).toBe(expected.cpf);
+      expect(result.gender).toBe(expected.gender);
+      expect(result.dateOfBirth).toBe(expected.dateOfBirth);
+      expect(result.email).toBe(expected.email);
+      expect(result.phone).toBe(expected.phone);
+      expect(result.age).toBe(expected.age);
+      // Verifica se o método do serviço foi chamado com o ID correto
+      expect(userService.findUserById).toHaveBeenCalledWith(userEntityMock.id);
+    });
   });
 
-  it('should update a user', async () => {
-    const result = await userController.updateUser(
-      userEntityMock.id,
-      updateUserMock as any,
-    );
-    expect(result).toEqual(new ReturnUserDto(userEntityMock));
-    expect(userService.updateUser).toHaveBeenCalledWith(
-      userEntityMock.id,
-      updateUserMock,
-    );
+  describe('updateUser', () => {
+    it('should update a user', async () => {
+      const result = await userController.updateUser(
+        userEntityMock.id,
+        updateUserMock as any,
+      );
+      expect(result).toEqual(new ReturnUserDto(userEntityMock));
+      expect(userService.updateUser).toHaveBeenCalledWith(
+        userEntityMock.id,
+        updateUserMock,
+      );
+    });
   });
 
-  it('should delete a user', async () => {
-    await userController.deleteUser(userEntityMock.id);
-    expect(userService.deleteUserById).toHaveBeenCalledWith(userEntityMock.id);
+  describe('deleteUserById', () => {
+    it('should delete a user', async () => {
+      await userController.deleteUser(userEntityMock.id);
+      expect(userService.deleteUserById).toHaveBeenCalledWith(
+        userEntityMock.id,
+      );
+    });
   });
 });

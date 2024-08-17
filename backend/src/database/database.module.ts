@@ -8,6 +8,8 @@ import { UserEntity } from '../models/user/entities/user.entities';
 import { AddressEntity } from '../models/address/entities/address.entity';
 import { CityEntity } from '../models/city/entities/city.entity';
 import { StateEntity } from '../models/state/entities/state.entity';
+import { CategoryEntity } from '../models/category/entities/category.entity';
+import { ProductEntity } from '../models/product/entities/product.entity';
 
 export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
@@ -16,7 +18,14 @@ export const dataSourceOptions: DataSourceOptions = {
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
-  entities: [UserEntity, AddressEntity, CityEntity, StateEntity],
+  entities: [
+    UserEntity,
+    AddressEntity,
+    CityEntity,
+    StateEntity,
+    CategoryEntity,
+    ProductEntity,
+  ],
   synchronize: false,
   logging: true,
 };
