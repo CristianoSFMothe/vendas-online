@@ -22,6 +22,7 @@ describe('CategoryService', () => {
             findOne: jest.fn().mockResolvedValue(CategoryMock),
             save: jest.fn().mockResolvedValue(CategoryMock),
             update: jest.fn().mockResolvedValue(CategoryMock),
+            remove: jest.fn().mockResolvedValue(void 0),
           },
         },
       ],
@@ -156,6 +157,23 @@ describe('CategoryService', () => {
       await expect(
         service.updateCategory(id, updateCategoryDto),
       ).rejects.toThrow(ConflictException);
+    });
+  });
+
+  describe('deleteCategory', () => {
+    it('should delete a category successfully', async () => {
+      const id = 1;
+      await service.deleteCategory(id);
+
+      expect(categoryRepository.remove).toHaveBeenCalledWith(CategoryMock);
+    });
+
+    it('should throw NotFoundException if category does not exist', async () => {
+      jest.spyOn(categoryRepository, 'findOne').mockResolvedValue(null);
+
+      await expect(service.deleteCategory(1)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 });

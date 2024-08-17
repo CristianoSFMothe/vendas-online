@@ -81,4 +81,16 @@ export class CategoryService {
 
     return this.categoryRepository.save(category);
   }
+
+  async deleteCategory(id: number): Promise<void> {
+    const category = await this.categoryRepository.findOne({
+      where: { id },
+    });
+
+    if (!category) {
+      throw new NotFoundException('Categoria não encontrada.');
+    }
+
+    await this.categoryRepository.remove(category);
+  }
 }
