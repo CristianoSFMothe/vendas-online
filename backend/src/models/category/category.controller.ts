@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { ReturnCategoryDto } from './dtos/returnCategory.dto';
 import { Roles } from '../../decorators/roles.decorator';
@@ -22,5 +22,13 @@ export class CategoryController {
     @Body() createCategoryDto: CreateCategoryDto,
   ): Promise<CategoryEntity> {
     return this.categoryService.createCategory(createCategoryDto);
+  }
+
+  @Roles(UserType.USER, UserType.ADMIN)
+  @Get('/:categoryName')
+  async findOneCategoryByName(
+    @Param('name') name: string,
+  ): Promise<CategoryEntity> {
+    return this.categoryService.findOneCategoryByName(name);
   }
 }

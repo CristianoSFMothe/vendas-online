@@ -1,8 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CategoryController } from '../category.controller';
 import { CategoryService } from '../category.service';
+import { ConflictException, NotFoundException } from '@nestjs/common';
 import { CategoryMock } from '../__mocks__/category.mock';
-import { CreateCategoryDto } from '../dtos/createCatgegory.dto';
+import { CreateCategoryMock } from '../__mocks__/createCategory.mock';
 
 describe('CategoryController', () => {
   let categoryController: CategoryController;
@@ -16,7 +17,8 @@ describe('CategoryController', () => {
           provide: CategoryService,
           useValue: {
             findAllCategories: jest.fn().mockResolvedValue([CategoryMock]),
-            createCategory: jest.fn().mockResolvedValue(CategoryMock),
+            createCategory: jest.fn(),
+            findOneCategoryByName: jest.fn(),
           },
         },
       ],
@@ -31,7 +33,7 @@ describe('CategoryController', () => {
   });
 
   describe('findAllCategories', () => {
-    it('should return an array of ReturnCategoryDto', async () => {
+    it('should return an array of CategoryEntity', async () => {
       const result = await categoryController.findAllCategories();
       expect(result).toEqual([CategoryMock]);
       expect(categoryService.findAllCategories).toHaveBeenCalled();
@@ -40,24 +42,55 @@ describe('CategoryController', () => {
 
   describe('createCategory', () => {
     it('should return a CategoryEntity after creation', async () => {
-      const createCategoryDto: CreateCategoryDto = {
-        name: 'categoryNameMock', // Use the same name as in CategoryMock
-      };
-      const result = await categoryController.createCategory(createCategoryDto);
+      jest
+        .spyOn(categoryService, 'createCategory')
+        .mockResolvedValue(CategoryMock);
+      const result = await categoryController.createCategory(
+        CreateCategoryMock,
+      );
       expect(result).toEqual(CategoryMock);
       expect(categoryService.createCategory).toHaveBeenCalledWith(
-        createCategoryDto,
+        CreateCategoryMock,
       );
     });
 
-    it('should throw an error if creation fails', async () => {
+    it('should throw ConflictException if category already exists', async () => {
       jest
-        .spyOn(categoryService, 'createCategory')
-        .mockRejectedValue(new Error('Erro ao criar categoria'));
+        .spyOn(categoryService, 'findOneCategoryByName')
+        .mockResolvedValue(CategoryMock);
+      jest.spyOn(categoryService, 'createCategory').mockImplementation(() => {
+        throw new ConflictException('Já existe uma categoria com esse nome.');
+      });
 
       await expect(
-        categoryController.createCategory({ name: 'categoryNameMock' }),
-      ).rejects.toThrowError('Erro ao criar categoria');
+        categoryController.createCategory(CreateCategoryMock),
+      ).rejects.toThrow(ConflictException);
+    });
+  });
+
+  describe('findOneCategoryByName', () => {
+    it('should return a CategoryEntity if category exists', async () => {
+      jest
+        .spyOn(categoryService, 'findOneCategoryByName')
+        .mockResolvedValue(CategoryMock);
+
+      const result = await categoryController.findOneCategoryByName(
+        CategoryMock.name,
+      );
+      expect(result).toEqual(CategoryMock);
+      expect(categoryService.findOneCategoryByName).toHaveBeenCalledWith(
+        CategoryMock.name,
+      );
+    });
+
+    it('should throw NotFoundException if category does not exist', async () => {
+      jest
+        .spyOn(categoryService, 'findOneCategoryByName')
+        .mockRejectedValue(new NotFoundException('Categoria não encontrada.'));
+
+      await expect(
+        categoryController.findOneCategoryByName('NonExistentName'),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 });

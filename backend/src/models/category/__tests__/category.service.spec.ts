@@ -4,7 +4,8 @@ import { Repository } from 'typeorm';
 import { CategoryEntity } from '../entities/category.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { CategoryMock } from '../__mocks__/category.mock';
-import { CreateCategoryMock } from '../__mocks__/createCategory.mock';
+import { CreateCategoryMock } from '../__mocks__/createCategory.mock'; // Importar o mock aqui
+import { ConflictException, NotFoundException } from '@nestjs/common';
 
 describe('CategoryService', () => {
   let service: CategoryService;
@@ -18,6 +19,7 @@ describe('CategoryService', () => {
           provide: getRepositoryToken(CategoryEntity),
           useValue: {
             find: jest.fn().mockResolvedValue([CategoryMock]),
+            findOne: jest.fn().mockResolvedValue(CategoryMock),
             save: jest.fn().mockResolvedValue(CategoryMock),
           },
         },
@@ -35,35 +37,69 @@ describe('CategoryService', () => {
     expect(categoryRepository).toBeDefined();
   });
 
-  describe('findAll', () => {
-    it('should return list category', async () => {
+  describe('findAllCategories', () => {
+    it('should return a list of categories', async () => {
       const categories = await service.findAllCategories();
-
       expect(categories).toEqual([CategoryMock]);
     });
 
-    it('should return error in list category empty', async () => {
+    it('should throw an error if no categories found', async () => {
       jest.spyOn(categoryRepository, 'find').mockResolvedValue([]);
 
-      expect(service.findAllCategories()).rejects.toThrowError();
+      await expect(service.findAllCategories()).rejects.toThrow(
+        NotFoundException,
+      );
     });
 
-    it('should return error in list category exceptions', async () => {
+    it('should throw an error if there is a database exception', async () => {
       jest.spyOn(categoryRepository, 'find').mockRejectedValue(new Error());
 
-      expect(service.findAllCategories()).rejects.toThrowError();
+      await expect(service.findAllCategories()).rejects.toThrow(Error);
     });
   });
 
-  it('should return category after save', async () => {
-    const category = await service.createCategory(CreateCategoryMock);
+  describe('createCategory', () => {
+    it('should return a category after save', async () => {
+      jest.spyOn(service, 'findOneCategoryByName').mockResolvedValue(null); // Simula que não existe uma categoria com o nome fornecido
 
-    expect(category).toEqual(CategoryMock);
+      const category = await service.createCategory(CreateCategoryMock);
+
+      expect(category).toEqual(CategoryMock);
+      expect(categoryRepository.save).toHaveBeenCalledWith(CreateCategoryMock);
+    });
+
+    it('should throw ConflictException if category already exists', async () => {
+      jest
+        .spyOn(service, 'findOneCategoryByName')
+        .mockResolvedValue(CategoryMock); // Simula que já existe uma categoria com o nome fornecido
+
+      await expect(service.createCategory(CreateCategoryMock)).rejects.toThrow(
+        ConflictException,
+      );
+    });
+
+    it('should throw an error if saving fails', async () => {
+      jest.spyOn(service, 'findOneCategoryByName').mockResolvedValue(null); // Simula que não existe uma categoria com o nome fornecido
+      jest.spyOn(categoryRepository, 'save').mockRejectedValue(new Error());
+
+      await expect(service.createCategory(CreateCategoryMock)).rejects.toThrow(
+        Error,
+      );
+    });
   });
 
-  it('should return erro in exception', async () => {
-    jest.spyOn(categoryRepository, 'save').mockRejectedValue(new Error());
+  describe('findOneCategoryByName', () => {
+    it('should return a category by name', async () => {
+      const category = await service.findOneCategoryByName(CategoryMock.name);
+      expect(category).toEqual(CategoryMock);
+    });
 
-    expect(service.createCategory(CreateCategoryMock)).rejects.toThrowError();
+    it('should throw NotFoundException if no category found', async () => {
+      jest.spyOn(categoryRepository, 'findOne').mockResolvedValue(null);
+
+      await expect(
+        service.findOneCategoryByName(CategoryMock.name),
+      ).rejects.toThrow(NotFoundException);
+    });
   });
 });
