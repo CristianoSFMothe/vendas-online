@@ -32,7 +32,6 @@
     "test:controllerAddress": "npm run test src/models/address/__tests__/address.controller.spec.ts",
     "test:serviceCategory": "npm run test src/models/category/__tests__/category.service.spec.ts",
     "test:controllerCategory": "npm run test src/models/category/__tests__/category.controller.spec.ts"
-    
   },
   "dependencies": {
     "@nestjs/axios": "^2.0.0",
@@ -40,6 +39,7 @@
     "@nestjs/config": "^2.3.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/jwt": "^10.0.1",
+    "@nestjs/mapped-types": "^2.0.5",
     "@nestjs/passport": "^9.0.1",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/typeorm": "^9.0.1",

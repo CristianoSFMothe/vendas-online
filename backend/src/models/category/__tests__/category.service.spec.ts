@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { CategoryEntity } from '../entities/category.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { CategoryMock } from '../__mocks__/category.mock';
-import { CreateCategoryMock } from '../__mocks__/createCategory.mock'; // Importar o mock aqui
+import { CreateCategoryMock } from '../__mocks__/createCategory.mock';
 import { ConflictException, NotFoundException } from '@nestjs/common';
 
 describe('CategoryService', () => {
@@ -21,6 +21,7 @@ describe('CategoryService', () => {
             find: jest.fn().mockResolvedValue([CategoryMock]),
             findOne: jest.fn().mockResolvedValue(CategoryMock),
             save: jest.fn().mockResolvedValue(CategoryMock),
+            update: jest.fn().mockResolvedValue(CategoryMock),
           },
         },
       ],
@@ -60,7 +61,7 @@ describe('CategoryService', () => {
 
   describe('createCategory', () => {
     it('should return a category after save', async () => {
-      jest.spyOn(service, 'findOneCategoryByName').mockResolvedValue(null); // Simula que não existe uma categoria com o nome fornecido
+      jest.spyOn(service, 'findOneCategoryByName').mockResolvedValue(null);
 
       const category = await service.createCategory(CreateCategoryMock);
 
@@ -71,7 +72,7 @@ describe('CategoryService', () => {
     it('should throw ConflictException if category already exists', async () => {
       jest
         .spyOn(service, 'findOneCategoryByName')
-        .mockResolvedValue(CategoryMock); // Simula que já existe uma categoria com o nome fornecido
+        .mockResolvedValue(CategoryMock);
 
       await expect(service.createCategory(CreateCategoryMock)).rejects.toThrow(
         ConflictException,
@@ -79,7 +80,7 @@ describe('CategoryService', () => {
     });
 
     it('should throw an error if saving fails', async () => {
-      jest.spyOn(service, 'findOneCategoryByName').mockResolvedValue(null); // Simula que não existe uma categoria com o nome fornecido
+      jest.spyOn(service, 'findOneCategoryByName').mockResolvedValue(null);
       jest.spyOn(categoryRepository, 'save').mockRejectedValue(new Error());
 
       await expect(service.createCategory(CreateCategoryMock)).rejects.toThrow(
@@ -100,6 +101,61 @@ describe('CategoryService', () => {
       await expect(
         service.findOneCategoryByName(CategoryMock.name),
       ).rejects.toThrow(NotFoundException);
+    });
+  });
+
+  describe('updateCategory', () => {
+    it('should update a category successfully', async () => {
+      const id = 123;
+      const updateCategoryDto = { name: 'UpdatedName' };
+      const existingCategory = { ...CategoryMock, id };
+
+      jest
+        .spyOn(categoryRepository, 'findOne')
+        .mockResolvedValueOnce(existingCategory as any)
+        .mockResolvedValueOnce(null);
+
+      jest.spyOn(categoryRepository, 'save').mockResolvedValue({
+        ...existingCategory,
+        name: updateCategoryDto.name,
+      } as any);
+
+      const result = await service.updateCategory(id, updateCategoryDto);
+      expect(result.name).toBe(updateCategoryDto.name);
+      expect(categoryRepository.findOne).toHaveBeenCalledWith({
+        where: { id },
+      });
+      expect(categoryRepository.save).toHaveBeenCalledWith({
+        ...existingCategory,
+        name: updateCategoryDto.name,
+      });
+    });
+
+    it('should throw NotFoundException if category does not exist', async () => {
+      const id = 123;
+      const updateCategoryDto = { name: 'UpdatedName' };
+
+      jest.spyOn(categoryRepository, 'findOne').mockResolvedValue(null);
+
+      await expect(
+        service.updateCategory(id, updateCategoryDto),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should throw ConflictException if another category with the same name exists', async () => {
+      const id = 123;
+      const updateCategoryDto = { name: 'UpdatedName' };
+      const existingCategory = { ...CategoryMock, id };
+      const conflictingCategory = { ...existingCategory, id: 999 };
+
+      jest
+        .spyOn(categoryRepository, 'findOne')
+        .mockResolvedValueOnce(existingCategory as any)
+        .mockResolvedValueOnce(conflictingCategory as any);
+
+      await expect(
+        service.updateCategory(id, updateCategoryDto),
+      ).rejects.toThrow(ConflictException);
     });
   });
 });

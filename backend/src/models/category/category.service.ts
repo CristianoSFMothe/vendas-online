@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CategoryEntity } from './entities/category.entity';
 import { Repository } from 'typeorm';
 import { CreateCategoryDto } from './dtos/createCatgegory.dto';
+import { UpdateCategoryDto } from './dtos/updateCategory.dto';
 
 @Injectable()
 export class CategoryService {
@@ -50,5 +51,34 @@ export class CategoryService {
     }
 
     return category;
+  }
+
+  async updateCategory(
+    id: number,
+    updateCategoryDto: UpdateCategoryDto,
+  ): Promise<CategoryEntity> {
+    const category = await this.categoryRepository.findOne({
+      where: {
+        id,
+      },
+    });
+
+    if (!category) {
+      throw new NotFoundException('Categoria não encontrada.');
+    }
+
+    if (updateCategoryDto.name) {
+      const existingCategory = await this.categoryRepository.findOne({
+        where: { name: updateCategoryDto.name },
+      });
+
+      if (existingCategory && existingCategory.id !== id) {
+        throw new ConflictException('Já existe uma categoria com esse nome.');
+      }
+
+      category.name = updateCategoryDto.name;
+    }
+
+    return this.categoryRepository.save(category);
   }
 }
