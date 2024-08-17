@@ -33,15 +33,17 @@ describe('StateService', () => {
     expect(stateRepository).toBeDefined();
   });
 
-  it('should return list of states', async () => {
-    const state = await service.getAllState();
+  describe('getAllStates', () => {
+    it('should return list of states', async () => {
+      const state = await service.getAllState();
 
-    expect(state).toEqual([stateMock]);
-  });
+      expect(state).toEqual([stateMock]);
+    });
 
-  it('should return error in exception', async () => {
-    jest.spyOn(stateRepository, 'find').mockRejectedValueOnce(new Error());
+    it('should return error in exception', async () => {
+      jest.spyOn(stateRepository, 'find').mockRejectedValueOnce(new Error());
 
-    expect(service.getAllState()).rejects.toThrowError();
+      expect(service.getAllState()).rejects.toThrowError();
+    });
   });
 });
