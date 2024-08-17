@@ -42,7 +42,7 @@ export class ProductEntity {
     type: 'int',
     nullable: false,
   })
-  categoryId: string;
+  categoryId: number;
 
   @CreateDateColumn({
     name: 'created_at',
