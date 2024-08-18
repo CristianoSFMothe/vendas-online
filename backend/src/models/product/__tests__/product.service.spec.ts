@@ -8,6 +8,7 @@ import { CategoryService } from '../../../models/category/category.service';
 import { CreateProduct } from '../__mocks__/createProduct.mock';
 import { CategoryMock } from '../../../models/category/__mocks__/category.mock';
 import { NotFoundException } from '@nestjs/common';
+import { returnDeleteMock } from '../../../__mocks__/returnDelete.mock';
 
 describe('ProductService', () => {
   let service: ProductService;
@@ -135,8 +136,27 @@ describe('ProductService', () => {
 
       const result = await service.findProductByName(searchName);
 
-      // Order by match score
-      expect(result).toEqual([product1, product2]); // Adjust as necessary based on match score calculation
+      expect(result).toEqual([product1, product2]);
+    });
+  });
+
+  describe('deleteProduct', () => {
+    it('should return product in find by id', async () => {
+      const product = await service.findProductById(ProductMock.id);
+
+      expect(product).toEqual(ProductMock);
+    });
+
+    it('should return error in product not found', async () => {
+      jest.spyOn(productRepository, 'findOne').mockResolvedValue(undefined);
+
+      expect(service.findProductById(ProductMock.id)).rejects.toThrowError();
+    });
+
+    it('should return deleted true in delete product', async () => {
+      const deleted = await service.deleteProduct(ProductMock.id);
+
+      expect(deleted).toEqual(returnDeleteMock);
     });
   });
 });
