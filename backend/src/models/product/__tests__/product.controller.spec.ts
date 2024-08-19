@@ -3,9 +3,10 @@ import { ProductController } from '../product.controller';
 import { ProductService } from '../product.service';
 import { ProductMock } from '../__mocks__/product.mock';
 import { ReturnProductDto } from '../dtos/returnProduct.dto';
-import { CreateProduct } from '../__mocks__/createProduct.mock';
+import { CreateProductMock } from '../__mocks__/createProduct.mock';
 import { returnDeleteMock } from '../../../__mocks__/returnDelete.mock';
 import { DeleteResult } from 'typeorm';
+import { updateProductMock } from '../__mocks__/updateProduct.mock';
 
 describe('ProductController', () => {
   let productController: ProductController;
@@ -22,6 +23,7 @@ describe('ProductController', () => {
             createProduct: jest.fn().mockResolvedValue(ProductMock),
             findProductByName: jest.fn().mockResolvedValue([ProductMock]),
             deleteProduct: jest.fn().mockResolvedValue(returnDeleteMock),
+            updateProduct: jest.fn().mockResolvedValue(ProductMock),
           },
         },
       ],
@@ -58,11 +60,13 @@ describe('ProductController', () => {
 
   describe('createProduct', () => {
     it('should create and return a product', async () => {
-      const result = await productController.createProduct(CreateProduct);
+      const result = await productController.createProduct(CreateProductMock);
       const expected = new ReturnProductDto(ProductMock);
 
       expect(result).toMatchObject(expected);
-      expect(productService.createProduct).toHaveBeenCalledWith(CreateProduct);
+      expect(productService.createProduct).toHaveBeenCalledWith(
+        CreateProductMock,
+      );
       expect(productService.createProduct).toHaveBeenCalledTimes(1);
     });
 
@@ -72,7 +76,7 @@ describe('ProductController', () => {
         .mockRejectedValueOnce(new Error());
 
       await expect(
-        productController.createProduct(CreateProduct),
+        productController.createProduct(CreateProductMock),
       ).rejects.toThrowError();
     });
   });
@@ -113,6 +117,33 @@ describe('ProductController', () => {
 
       expect(result).toEqual(returnDeleteMock);
       expect(productService.deleteProduct).toHaveBeenCalledWith(productId);
+    });
+  });
+
+  describe('updateProduct', () => {
+    it('should return updated product', async () => {
+      const productId = ProductMock.id;
+      const result = await productController.updateProduct(
+        updateProductMock,
+        productId,
+      );
+
+      expect(result).toEqual(ProductMock);
+      expect(productService.updateProduct).toHaveBeenCalledWith(
+        updateProductMock,
+        productId,
+      );
+    });
+
+    it('should handle errors when updating a product', async () => {
+      const productId = ProductMock.id;
+      jest
+        .spyOn(productService, 'updateProduct')
+        .mockRejectedValueOnce(new Error());
+
+      await expect(
+        productController.updateProduct(updateProductMock, productId),
+      ).rejects.toThrowError();
     });
   });
 });

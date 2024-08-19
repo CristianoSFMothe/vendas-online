@@ -5,7 +5,7 @@ import { ProductEntity } from '../entities/product.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ProductMock } from '../__mocks__/product.mock';
 import { CategoryService } from '../../../models/category/category.service';
-import { CreateProduct } from '../__mocks__/createProduct.mock';
+import { CreateProductMock } from '../__mocks__/createProduct.mock';
 import { CategoryMock } from '../../../models/category/__mocks__/category.mock';
 import { NotFoundException } from '@nestjs/common';
 import { returnDeleteMock } from '../../../__mocks__/returnDelete.mock';
@@ -32,7 +32,7 @@ describe('ProductService', () => {
             findOne: jest.fn().mockResolvedValue([ProductMock]),
             save: jest.fn().mockResolvedValue(ProductMock),
             update: jest.fn().mockResolvedValue(ProductMock),
-            delete: jest.fn().mockResolvedValue(ProductMock),
+            delete: jest.fn().mockResolvedValue(returnDeleteMock),
           },
         },
       ],
@@ -73,7 +73,7 @@ describe('ProductService', () => {
 
   describe('createProduct', () => {
     it('should return product after insert in DB', async () => {
-      const product = await service.createProduct(CreateProduct);
+      const product = await service.createProduct(CreateProductMock);
 
       expect(product).toEqual(ProductMock);
     });
@@ -83,7 +83,7 @@ describe('ProductService', () => {
         .spyOn(categoryService, 'findCategoryById')
         .mockRejectedValue(new Error());
 
-      expect(service.createProduct(CreateProduct)).rejects.toThrowError();
+      expect(service.createProduct(CreateProductMock)).rejects.toThrowError();
     });
   });
 
@@ -143,6 +143,7 @@ describe('ProductService', () => {
   describe('deleteProduct', () => {
     it('should return product in find by id', async () => {
       const product = await service.findProductById(ProductMock.id);
+      console.log(product);
 
       expect(product).toEqual(ProductMock);
     });
@@ -157,6 +158,25 @@ describe('ProductService', () => {
       const deleted = await service.deleteProduct(ProductMock.id);
 
       expect(deleted).toEqual(returnDeleteMock);
+    });
+  });
+
+  describe('updateProduct', () => {
+    it('should return produt after update', async () => {
+      const product = await service.updateProduct(
+        CreateProductMock,
+        ProductMock.id,
+      );
+
+      expect(product).toEqual(ProductMock);
+    });
+
+    it('should error in update product', async () => {
+      jest.spyOn(productRepository, 'save').mockRejectedValue(new Error());
+
+      expect(
+        service.updateProduct(CreateProductMock, ProductMock.id),
+      ).rejects.toThrowError();
     });
   });
 });

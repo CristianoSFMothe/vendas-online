@@ -6,6 +6,7 @@ import {
   Headers,
   Param,
   Post,
+  Put,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { ReturnProductDto } from './dtos/returnProduct.dto';
@@ -14,6 +15,7 @@ import { UserType } from '../../enum/userType.enum';
 import { CreateProductDto } from './dtos/createProduct.dto';
 import { ProductEntity } from './entities/product.entity';
 import { DeleteResult } from 'typeorm';
+import { UpdateProductDto } from './dtos/updateProduct.dto';
 
 @Controller('product')
 export class ProductController {
@@ -49,5 +51,14 @@ export class ProductController {
     @Param('productId') productId: number,
   ): Promise<DeleteResult> {
     return this.productService.deleteProduct(productId);
+  }
+
+  @Roles(UserType.ADMIN)
+  @Put('/:productId')
+  async updateProduct(
+    @Body() updateProduct: UpdateProductDto,
+    @Param('productId') productId: number,
+  ): Promise<ProductEntity> {
+    return this.productService.updateProduct(updateProduct, productId);
   }
 }
