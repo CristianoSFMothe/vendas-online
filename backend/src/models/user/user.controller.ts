@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dtos/createUser.dto';
@@ -13,6 +14,9 @@ import { ReturnUserDto } from './dtos/returnUser.dto';
 import { UpdateUserDto } from './dtos/updateUser.dto';
 import { Roles } from '../../decorators/roles.decorator';
 import { UserType } from '../../enum/userType.enum';
+import { UpdatePasswordUser } from './dtos/updatePassword.dto';
+import { UserEntity } from './entities/user.entities';
+import { UserId } from '../../decorators/user-id.decorator';
 
 @Controller('user')
 export class UserController {
@@ -59,5 +63,13 @@ export class UserController {
   @Delete('/:id')
   async deleteUser(@Param('id') id: number): Promise<void> {
     await this.userService.deleteUserById(id);
+  }
+
+  @Patch()
+  async updatePasswordUser(
+    @Body() updatePasswordUser: UpdatePasswordUser,
+    @UserId() userId: number,
+  ): Promise<UserEntity> {
+    return this.userService.updatePasswordUser(updatePasswordUser, userId);
   }
 }
