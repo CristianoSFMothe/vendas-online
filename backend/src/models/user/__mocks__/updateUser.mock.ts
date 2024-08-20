@@ -1,7 +1,7 @@
 import { UserEntity } from '../entities/user.entities';
 import { GenderType } from '../enum/user.enum';
 
-export const updateUserMock: Partial<UserEntity> = {
+export const UpdateUserMock: Partial<UserEntity> = {
   name: 'UpdatedName',
   surname: 'UpdatedSurname',
   cpf: '47810814010',

@@ -27,7 +27,7 @@ export class UserController {
     return this.userService.createUser(createUser);
   }
 
-  @Roles(UserType.USER, UserType.ADMIN)
+  @Roles(UserType.ADMIN)
   @Get()
   async getAllUser(): Promise<ReturnUserDto[]> {
     return (await this.userService.getAllUser()).map(
@@ -35,7 +35,7 @@ export class UserController {
     );
   }
 
-  @Roles(UserType.USER, UserType.ADMIN)
+  @Roles(UserType.ADMIN)
   @Get('/:userId')
   async getUserById(@Param('userId') userId: number): Promise<ReturnUserDto> {
     return new ReturnUserDto(
@@ -65,6 +65,7 @@ export class UserController {
     await this.userService.deleteUserById(id);
   }
 
+  @Roles(UserType.USER, UserType.ADMIN)
   @Patch()
   async updatePasswordUser(
     @Body() updatePasswordUser: UpdatePasswordUser,
