@@ -29,6 +29,11 @@ export class CreateTableProduct1723347289529 implements MigrationInterface {
             isNullable: false,
           },
           {
+            name: 'amount',
+            type: 'int',
+            isNullable: false,
+          },
+          {
             name: 'image',
             type: 'varchar',
             isNullable: false,

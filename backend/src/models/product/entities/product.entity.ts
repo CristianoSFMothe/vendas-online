@@ -30,6 +30,13 @@ export class ProductEntity {
   price: number;
 
   @Column({
+    name: 'amount',
+    type: 'int',
+    nullable: false,
+  })
+  amount: number;
+
+  @Column({
     name: 'image',
     type: 'varchar',
     length: 255,

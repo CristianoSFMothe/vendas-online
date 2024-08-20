@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dtos/createUser.dto';
@@ -13,6 +14,9 @@ import { ReturnUserDto } from './dtos/returnUser.dto';
 import { UpdateUserDto } from './dtos/updateUser.dto';
 import { Roles } from '../../decorators/roles.decorator';
 import { UserType } from '../../enum/userType.enum';
+import { UpdatePasswordUser } from './dtos/updatePassword.dto';
+import { UserEntity } from './entities/user.entities';
+import { UserId } from '../../decorators/user-id.decorator';
 
 @Controller('user')
 export class UserController {
@@ -23,7 +27,7 @@ export class UserController {
     return this.userService.createUser(createUser);
   }
 
-  @Roles(UserType.USER)
+  @Roles(UserType.ADMIN)
   @Get()
   async getAllUser(): Promise<ReturnUserDto[]> {
     return (await this.userService.getAllUser()).map(
@@ -31,7 +35,7 @@ export class UserController {
     );
   }
 
-  @Roles(UserType.USER, UserType.ADMIN)
+  @Roles(UserType.ADMIN)
   @Get('/:userId')
   async getUserById(@Param('userId') userId: number): Promise<ReturnUserDto> {
     return new ReturnUserDto(
@@ -59,5 +63,14 @@ export class UserController {
   @Delete('/:id')
   async deleteUser(@Param('id') id: number): Promise<void> {
     await this.userService.deleteUserById(id);
+  }
+
+  @Roles(UserType.USER, UserType.ADMIN)
+  @Patch()
+  async updatePasswordUser(
+    @Body() updatePasswordUser: UpdatePasswordUser,
+    @UserId() userId: number,
+  ): Promise<UserEntity> {
+    return this.userService.updatePasswordUser(updatePasswordUser, userId);
   }
 }

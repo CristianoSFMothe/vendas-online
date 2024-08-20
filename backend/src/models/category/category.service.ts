@@ -72,13 +72,12 @@ export class CategoryService {
       throw new NotFoundException('Nome da categoria não fornecido.');
     }
 
-    // Realiza a busca parcial
     const categories = await this.categoryRepository.find({
       where: {
         name: Like(`%${name}%`),
       },
       order: {
-        name: 'ASC', // Ordena os resultados pelo nome
+        name: 'ASC',
       },
     });
 
@@ -88,19 +87,16 @@ export class CategoryService {
       );
     }
 
-    // Ordena os resultados para exibir correspondências mais precisas no início
     categories.sort((a, b) => {
       const aScore = this.getMatchScore(a.name, name);
       const bScore = this.getMatchScore(b.name, name);
-      return bScore - aScore; // Maior pontuação primeiro
+      return bScore - aScore;
     });
 
     return categories;
   }
 
-  // Método auxiliar para calcular a pontuação de correspondência
   private getMatchScore(categoryName: string, searchName: string): number {
-    // Calcula a pontuação com base na quantidade de caracteres correspondentes
     const lowerCategoryName = categoryName.toLowerCase();
     const lowerSearchName = searchName.toLowerCase();
     const index = lowerCategoryName.indexOf(lowerSearchName);
@@ -109,7 +105,6 @@ export class CategoryService {
       return 0;
     }
 
-    // Pontuação baseada na posição e comprimento da correspondência
     return (searchName.length / (index + 1)) * 100;
   }
 

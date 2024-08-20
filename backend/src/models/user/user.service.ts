@@ -8,13 +8,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entities';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dtos/createUser.dto';
-import { hash } from 'bcrypt';
 import { isValidCpf } from './utils/isValidCpf.utils';
 import { formatCpf } from './utils/formatting.utils';
 import { calculateAge } from './utils/age.utils';
 import { ReturnUserDto } from './dtos/returnUser.dto';
 import { UpdateUserDto } from './dtos/updateUser.dto';
 import { UserType } from '../../enum/userType.enum';
+import { UpdatePasswordUser } from './dtos/updatePassword.dto';
+import {
+  createPasswordHashed,
+  validatePassword,
+} from '../../utils/password.utils';
 
 @Injectable()
 export class UserService {
@@ -44,8 +48,7 @@ export class UserService {
       throw new ConflictException('CPF já cadastrado.');
     }
 
-    const saltOrRounds = 10;
-    const passwordHashed = await hash(createUserDto.password, saltOrRounds);
+    const passwordHashed = await createPasswordHashed(createUserDto.password);
 
     const age = calculateAge(createUserDto.dateOfBirth);
 
@@ -138,5 +141,30 @@ export class UserService {
     }
 
     await this.userRepository.remove(user);
+  }
+
+  async updatePasswordUser(
+    updatePasswordUser: UpdatePasswordUser,
+    userId: number,
+  ): Promise<UserEntity> {
+    const user = await this.findUserById(userId);
+
+    const passwordHashed = await createPasswordHashed(
+      updatePasswordUser.newPassword,
+    );
+
+    const isMatch = await validatePassword(
+      updatePasswordUser.lastPassword,
+      user.password || '',
+    );
+
+    if (!isMatch) {
+      throw new BadRequestException('Senha inválida');
+    }
+
+    return this.userRepository.save({
+      ...user,
+      password: passwordHashed,
+    });
   }
 }

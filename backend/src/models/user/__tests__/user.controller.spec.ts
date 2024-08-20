@@ -4,7 +4,12 @@ import { UserService } from '../user.service';
 import { ReturnUserDto } from '../dtos/returnUser.dto';
 import { userEntityMock } from '../__mocks__/user.mock';
 import { createUserMock } from '../__mocks__/createUser.mock';
-import { updateUserMock } from '../__mocks__/updateUser.mock';
+import { UpdateUserMock } from '../__mocks__/updateUser.mock';
+import {
+  UpdatePasswordInvalidMock,
+  UpdatePasswordMock,
+} from '../__mocks__/updateUserPassword.mock';
+import { HttpException, HttpStatus } from '@nestjs/common';
 
 describe('UserController', () => {
   let userController: UserController;
@@ -29,6 +34,7 @@ describe('UserController', () => {
               .fn()
               .mockResolvedValue(new ReturnUserDto(userEntityMock)),
             deleteUserById: jest.fn().mockResolvedValue(undefined),
+            updatePasswordUser: jest.fn().mockResolvedValue(userEntityMock),
           },
         },
       ],
@@ -76,13 +82,10 @@ describe('UserController', () => {
         .spyOn(userService, 'findUserById')
         .mockResolvedValueOnce(userEntityMock);
 
-      // Executa o método do controlador
       const result = await userController.findUserById(userEntityMock.id);
 
-      // Cria um DTO esperado a partir do mock
       const expected = new ReturnUserDto(userEntityMock);
 
-      // Comparando campos individualmente
       expect(result.id).toBe(expected.id);
       expect(result.name).toBe(expected.name);
       expect(result.surname).toBe(expected.surname);
@@ -92,7 +95,7 @@ describe('UserController', () => {
       expect(result.email).toBe(expected.email);
       expect(result.phone).toBe(expected.phone);
       expect(result.age).toBe(expected.age);
-      // Verifica se o método do serviço foi chamado com o ID correto
+
       expect(userService.findUserById).toHaveBeenCalledWith(userEntityMock.id);
     });
   });
@@ -101,12 +104,12 @@ describe('UserController', () => {
     it('should update a user', async () => {
       const result = await userController.updateUser(
         userEntityMock.id,
-        updateUserMock as any,
+        UpdateUserMock as any,
       );
       expect(result).toEqual(new ReturnUserDto(userEntityMock));
       expect(userService.updateUser).toHaveBeenCalledWith(
         userEntityMock.id,
-        updateUserMock,
+        UpdateUserMock,
       );
     });
   });
@@ -115,6 +118,65 @@ describe('UserController', () => {
     it('should delete a user', async () => {
       await userController.deleteUser(userEntityMock.id);
       expect(userService.deleteUserById).toHaveBeenCalledWith(
+        userEntityMock.id,
+      );
+    });
+  });
+
+  describe('updatePasswordUser', () => {
+    it('should update the user password successfully', async () => {
+      jest
+        .spyOn(userService, 'updatePasswordUser')
+        .mockResolvedValueOnce(userEntityMock);
+
+      const result = await userController.updatePasswordUser(
+        UpdatePasswordMock,
+        userEntityMock.id,
+      );
+
+      expect(result).toEqual(userEntityMock);
+      expect(userService.updatePasswordUser).toHaveBeenCalledWith(
+        UpdatePasswordMock,
+        userEntityMock.id,
+      );
+    });
+
+    it('should throw an error if user does not exist', async () => {
+      jest
+        .spyOn(userService, 'updatePasswordUser')
+        .mockRejectedValueOnce(
+          new HttpException('User not found', HttpStatus.NOT_FOUND),
+        );
+
+      await expect(
+        userController.updatePasswordUser(
+          UpdatePasswordMock,
+          userEntityMock.id,
+        ),
+      ).rejects.toThrowError();
+
+      expect(userService.updatePasswordUser).toHaveBeenCalledWith(
+        UpdatePasswordMock,
+        userEntityMock.id,
+      );
+    });
+
+    it('should throw an error if the last password is incorrect', async () => {
+      jest
+        .spyOn(userService, 'updatePasswordUser')
+        .mockRejectedValueOnce(
+          new HttpException('Invalid password update', HttpStatus.BAD_REQUEST),
+        );
+
+      await expect(
+        userController.updatePasswordUser(
+          UpdatePasswordInvalidMock,
+          userEntityMock.id,
+        ),
+      ).rejects.toThrowError();
+
+      expect(userService.updatePasswordUser).toHaveBeenCalledWith(
+        UpdatePasswordInvalidMock,
         userEntityMock.id,
       );
     });

@@ -11,7 +11,11 @@ import {
 } from '@nestjs/common';
 import { createUserMock } from '../__mocks__/createUser.mock';
 import { userEntityMock } from '../__mocks__/user.mock';
-import { updateUserMock } from '../__mocks__/updateUser.mock';
+import { UpdateUserMock } from '../__mocks__/updateUser.mock';
+import { UpdatePasswordMock } from '../__mocks__/updateUserPassword.mock';
+import { returnDeleteMock } from '../../../__mocks__/returnDelete.mock';
+
+import * as bcrypt from 'bcrypt';
 
 describe('UserService', () => {
   let service: UserService;
@@ -24,9 +28,9 @@ describe('UserService', () => {
         {
           provide: getRepositoryToken(UserEntity),
           useValue: {
-            findOne: jest.fn(),
-            save: jest.fn(),
-            remove: jest.fn(),
+            findOne: jest.fn().mockResolvedValue(userEntityMock),
+            save: jest.fn().mockResolvedValue(userEntityMock),
+            remove: jest.fn().mockResolvedValue(returnDeleteMock),
           },
         },
       ],
@@ -185,21 +189,21 @@ describe('UserService', () => {
       jest.spyOn(service, 'findUserById').mockResolvedValueOnce(userEntityMock);
       jest.spyOn(userRepository, 'save').mockResolvedValueOnce({
         ...userEntityMock,
-        ...updateUserMock,
+        ...UpdateUserMock,
       });
 
       const result = await service.updateUser(
         userEntityMock.id,
-        updateUserMock as any,
+        UpdateUserMock as any,
       );
 
       expect(result).toEqual({
         ...userEntityMock,
-        ...updateUserMock,
+        ...UpdateUserMock,
       });
       expect(userRepository.save).toHaveBeenCalledWith({
         ...userEntityMock,
-        ...updateUserMock,
+        ...UpdateUserMock,
       });
     });
 
@@ -207,7 +211,7 @@ describe('UserService', () => {
       jest.spyOn(service, 'findUserById').mockResolvedValueOnce(undefined);
 
       await expect(
-        service.updateUser(userEntityMock.id, updateUserMock as any),
+        service.updateUser(userEntityMock.id, UpdateUserMock as any),
       ).rejects.toThrow(new NotFoundException('Usuário não encontrado.'));
     });
 
@@ -215,7 +219,7 @@ describe('UserService', () => {
       jest.spyOn(service, 'findUserById').mockRejectedValueOnce(new Error());
 
       await expect(
-        service.updateUser(userEntityMock.id, updateUserMock as any),
+        service.updateUser(userEntityMock.id, UpdateUserMock as any),
       ).rejects.toThrow();
     });
   });
@@ -244,6 +248,35 @@ describe('UserService', () => {
       jest.spyOn(userRepository, 'findOne').mockRejectedValueOnce(new Error());
 
       await expect(service.deleteUserById(userEntityMock.id)).rejects.toThrow();
+    });
+  });
+
+  describe('updatePassword', () => {
+    it('should return user in update password', async () => {
+      jest
+        .spyOn(service, 'updatePasswordUser')
+        .mockResolvedValue(userEntityMock);
+
+      const user = await service.updatePasswordUser(
+        UpdatePasswordMock,
+        userEntityMock.id,
+      );
+
+      expect(user).toEqual(userEntityMock);
+    });
+
+    it('should return invalid update in user', async () => {
+      expect(
+        service.updatePasswordUser(UpdatePasswordMock, userEntityMock.id),
+      ).rejects.toThrowError();
+    });
+
+    it('should return in user not exist', async () => {
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(undefined);
+
+      expect(
+        service.updatePasswordUser(UpdatePasswordMock, userEntityMock.id),
+      ).rejects.toThrowError();
     });
   });
 });
