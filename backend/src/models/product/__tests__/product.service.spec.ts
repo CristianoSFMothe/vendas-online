@@ -29,7 +29,7 @@ describe('ProductService', () => {
           provide: getRepositoryToken(ProductEntity),
           useValue: {
             find: jest.fn().mockResolvedValue([ProductMock]),
-            findOne: jest.fn().mockResolvedValue([ProductMock]),
+            findOne: jest.fn().mockResolvedValue(ProductMock),
             save: jest.fn().mockResolvedValue(ProductMock),
             update: jest.fn().mockResolvedValue(ProductMock),
             delete: jest.fn().mockResolvedValue(returnDeleteMock),
