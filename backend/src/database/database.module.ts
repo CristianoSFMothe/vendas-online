@@ -10,6 +10,7 @@ import { CityEntity } from '../models/city/entities/city.entity';
 import { StateEntity } from '../models/state/entities/state.entity';
 import { CategoryEntity } from '../models/category/entities/category.entity';
 import { ProductEntity } from '../models/product/entities/product.entity';
+import { CartEntity } from '../models/cart/entities/cart.entity';
 
 export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
@@ -25,6 +26,7 @@ export const dataSourceOptions: DataSourceOptions = {
     StateEntity,
     CategoryEntity,
     ProductEntity,
+    CartEntity,
   ],
   synchronize: false,
   logging: true,

@@ -9,6 +9,7 @@ import { InsertStates1723257740033 } from '../migrations/1723257740033-InsertSta
 import { CreateTableCategory1723347278125 } from '../migrations/1723347278125-CreateTableCategory';
 import { CreateTableProduct1723347289529 } from '../migrations/1723347289529-CreateTableProduct';
 import { InsertRootInUser1723858913802 } from '../migrations/1723858913802-InsertRootInUser';
+import { CreateTableCart1724153799874 } from '../migrations/1724153799874-CreateTableCart';
 
 export const dataSource = new DataSource({
   ...dataSourceOptions,
@@ -23,6 +24,7 @@ export const dataSource = new DataSource({
     CreateTableCategory1723347278125,
     CreateTableProduct1723347289529,
     InsertRootInUser1723858913802,
+    CreateTableCart1724153799874,
   ],
   logging: true,
 });
