@@ -38,9 +38,9 @@ Back-End para um sistema de vendas online utilizando NestJs com o TyperORM para 
 * [ ] Litar fornecedores
 * [ ] Editar fornecedores
 * [ ] Deletar fornecedores
-* [] Cadastrar empresa
-* [] Listar empresas
-* [] Editar empresa
-* [] Deletar empresa
+* [ ] Cadastrar empresa
+* [ ] Listar empresas
+* [ ] Editar empresa
+* [ ] Deletar empresa
 
 
