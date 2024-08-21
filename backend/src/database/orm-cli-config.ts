@@ -11,6 +11,7 @@ import { CreateTableProduct1723347289529 } from '../migrations/1723347289529-Cre
 import { InsertRootInUser1723858913802 } from '../migrations/1723858913802-InsertRootInUser';
 import { CreateTableCart1724153799874 } from '../migrations/1724153799874-CreateTableCart';
 import { CreateTableCartProduct1724201172954 } from '../migrations/1724201172954-CreateTableCartProduct';
+import { AlterTableCart1724203892965 } from '../migrations/1724203892965-AlterTableCart';
 
 export const dataSource = new DataSource({
   ...dataSourceOptions,
@@ -27,6 +28,7 @@ export const dataSource = new DataSource({
     InsertRootInUser1723858913802,
     CreateTableCart1724153799874,
     CreateTableCartProduct1724201172954,
+    AlterTableCart1724203892965,
   ],
   logging: true,
 });
