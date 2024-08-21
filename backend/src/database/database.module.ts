@@ -11,11 +11,12 @@ import { StateEntity } from '../models/state/entities/state.entity';
 import { CategoryEntity } from '../models/category/entities/category.entity';
 import { ProductEntity } from '../models/product/entities/product.entity';
 import { CartEntity } from '../models/cart/entities/cart.entity';
+import { CartProductEntity } from '../models/cart-product/entities/cart-product.entity';
 
 export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
   host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT), // Converte a porta para número
+  port: Number(process.env.DB_PORT),
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
@@ -27,6 +28,7 @@ export const dataSourceOptions: DataSourceOptions = {
     CategoryEntity,
     ProductEntity,
     CartEntity,
+    CartProductEntity,
   ],
   synchronize: false,
   logging: true,
