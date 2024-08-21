@@ -30,7 +30,7 @@ Back-End para um sistema de vendas online utilizando NestJs com o TyperORM para 
 * [x] Editar produtos
 * [x] Deletar produtos
 * [ ] Utilizar uma API externa para o cadastro do endereço
-* [ ] Criar carrinhos de compras
+* [x] Criar carrinhos de compras
 * [ ] Editar carrinhos de compras
 * [ ] Listar carrinhos de compras
 * [ ] Deletar carrinhos de compras
