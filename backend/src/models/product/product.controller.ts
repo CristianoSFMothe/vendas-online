@@ -9,13 +9,13 @@ import {
   Put,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
-import { ReturnProductDto } from './dtos/returnProduct.dto';
+import { ReturnProductDto } from './dto/returnProduct.dto';
 import { Roles } from '../../decorators/roles.decorator';
 import { UserType } from '../../enum/userType.enum';
-import { CreateProductDto } from './dtos/createProduct.dto';
+import { CreateProductDto } from './dto/createProduct.dto';
 import { ProductEntity } from './entities/product.entity';
 import { DeleteResult } from 'typeorm';
-import { UpdateProductDto } from './dtos/updateProduct.dto';
+import { UpdateProductDto } from './dto/updateProduct.dto';
 
 @Controller('product')
 export class ProductController {

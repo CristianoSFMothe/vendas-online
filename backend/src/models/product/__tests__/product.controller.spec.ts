@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ProductController } from '../product.controller';
 import { ProductService } from '../product.service';
 import { ProductMock } from '../__mocks__/product.mock';
-import { ReturnProductDto } from '../dtos/returnProduct.dto';
+import { ReturnProductDto } from '../dto/returnProduct.dto';
 import { CreateProductMock } from '../__mocks__/createProduct.mock';
 import { returnDeleteMock } from '../../../__mocks__/returnDelete.mock';
 import { DeleteResult } from 'typeorm';

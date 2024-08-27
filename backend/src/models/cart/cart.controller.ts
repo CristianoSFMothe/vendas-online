@@ -1,10 +1,11 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post } from '@nestjs/common';
 import { Roles } from '../../decorators/roles.decorator';
 import { UserType } from '../../enum/userType.enum';
 import { CartService } from './cart.service';
-import { InsertCartDto } from './dtos/insertCart.dto';
+import { InsertCartDto } from './dto/insertCart.dto';
 import { UserId } from '../../decorators/user-id.decorator';
-import { ReturnCartDto } from './dtos/returnCart.dto';
+import { ReturnCartDto } from './dto/returnCart.dto';
+import { DeleteResult } from 'typeorm';
 
 @Roles(UserType.USER)
 @Controller('cart')
@@ -20,5 +21,19 @@ export class CartController {
     return new ReturnCartDto(
       await this.cartService.insertProductInCart(insertCartDto, userId),
     );
+  }
+
+  @Roles(UserType.USER)
+  @Get()
+  async findCartByUserId(@UserId() userId: number): Promise<ReturnCartDto> {
+    return new ReturnCartDto(
+      await this.cartService.findCartByUserId(userId, true),
+    );
+  }
+
+  @Roles(UserType.USER)
+  @Delete()
+  async clearCart(@UserId() userId: number): Promise<DeleteResult> {
+    return this.cartService.clearCart(userId);
   }
 }

@@ -9,12 +9,12 @@ import {
   Headers,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
-import { ReturnCategoryDto } from './dtos/returnCategory.dto';
+import { ReturnCategoryDto } from './dto/returnCategory.dto';
 import { Roles } from '../../decorators/roles.decorator';
 import { UserType } from '../../enum/userType.enum';
 import { CategoryEntity } from './entities/category.entity';
-import { CreateCategoryDto } from './dtos/createCatgegory.dto';
-import { UpdateCategoryDto } from './dtos/updateCategory.dto';
+import { CreateCategoryDto } from './dto/createCatgegory.dto';
+import { UpdateCategoryDto } from './dto/updateCategory.dto';
 
 @Controller('category')
 export class CategoryController {
