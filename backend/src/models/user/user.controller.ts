@@ -6,15 +6,14 @@ import {
   Param,
   Patch,
   Post,
-  Put,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dtos/createUser.dto';
-import { ReturnUserDto } from './dtos/returnUser.dto';
-import { UpdateUserDto } from './dtos/updateUser.dto';
+import { CreateUserDto } from './dto/createUser.dto';
+import { ReturnUserDto } from './dto/returnUser.dto';
+import { UpdateUserDto } from './dto/updateUser.dto';
 import { Roles } from '../../decorators/roles.decorator';
 import { UserType } from '../../enum/userType.enum';
-import { UpdatePasswordUser } from './dtos/updatePassword.dto';
+import { UpdatePasswordUser } from './dto/updatePassword.dto';
 import { UserEntity } from './entities/user.entities';
 import { UserId } from '../../decorators/user-id.decorator';
 

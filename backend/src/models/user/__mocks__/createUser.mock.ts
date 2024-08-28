@@ -1,5 +1,5 @@
 import { GenderType } from '../enum/user.enum';
-import { CreateUserDto } from '../dtos/createUser.dto';
+import { CreateUserDto } from '../dto/createUser.dto';
 
 export const createUserMock: CreateUserDto = {
   name: 'nameMock',
