@@ -162,7 +162,7 @@ describe('ProductService', () => {
   });
 
   describe('updateProduct', () => {
-    it('should return produt after update', async () => {
+    it('should return product after update', async () => {
       const product = await service.updateProduct(
         CreateProductMock,
         ProductMock.id,
@@ -176,6 +176,32 @@ describe('ProductService', () => {
 
       expect(
         service.updateProduct(CreateProductMock, ProductMock.id),
+      ).rejects.toThrowError();
+    });
+  });
+
+  describe('updateProductAmount', () => {
+    it('should update the product amount successfully', async () => {
+      const productId = ProductMock.id;
+      const newAmount = 10;
+
+      const updateSpy = jest
+        .spyOn(productRepository, 'update')
+        .mockResolvedValue(undefined);
+
+      await service.updateProductAmount(productId, newAmount);
+
+      expect(updateSpy).toHaveBeenCalledWith(productId, { amount: newAmount });
+    });
+
+    it('should throw an error if update fails', async () => {
+      const productId = ProductMock.id;
+      const newAmount = 10;
+
+      jest.spyOn(productRepository, 'update').mockRejectedValue(new Error());
+
+      await expect(
+        service.updateProductAmount(productId, newAmount),
       ).rejects.toThrowError();
     });
   });
