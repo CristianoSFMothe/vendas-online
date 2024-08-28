@@ -6,5 +6,5 @@ export const CreateProductMock: CreateProductDto = {
   image: 'https://images.jpg',
   name: 'name mock product',
   price: 25.0,
-  amount: 100,
+  amount: 10000,
 };
