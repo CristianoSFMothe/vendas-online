@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
 } from '@nestjs/common';
@@ -49,7 +50,7 @@ export class CartController {
   @Roles(UserType.USER)
   @Delete('/product/:productId')
   async deleteProductCart(
-    @Param('productId') productId: number,
+    @Param('productId', ParseIntPipe) productId: number,
     @UserId() userId: number,
   ): Promise<DeleteResult> {
     return this.cartService.deleteProductCart(productId, userId);

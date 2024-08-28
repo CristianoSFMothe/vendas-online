@@ -104,4 +104,8 @@ export class ProductService {
       ...updateProduct,
     });
   }
+
+  async updateProductAmount(productId: number, amount: number): Promise<void> {
+    await this.productRepository.update(productId, { amount });
+  }
 }

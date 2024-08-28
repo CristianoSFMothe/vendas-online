@@ -5,6 +5,7 @@ import {
   Get,
   Headers,
   Param,
+  ParseIntPipe,
   Post,
   Put,
 } from '@nestjs/common';
@@ -29,6 +30,13 @@ export class ProductController {
     );
   }
 
+  @Get(':id')
+  async findProductById(
+    @Param('id', ParseIntPipe) productId: number,
+  ): Promise<ProductEntity> {
+    return this.productService.findProductById(productId);
+  }
+
   @Roles(UserType.ADMIN)
   @Post()
   async createProduct(
@@ -48,7 +56,7 @@ export class ProductController {
   @Roles(UserType.ADMIN)
   @Delete('/:productId')
   async deleteProduct(
-    @Param('productId') productId: number,
+    @Param('productId', ParseIntPipe) productId: number,
   ): Promise<DeleteResult> {
     return this.productService.deleteProduct(productId);
   }
@@ -57,7 +65,7 @@ export class ProductController {
   @Put('/:productId')
   async updateProduct(
     @Body() updateProduct: UpdateProductDto,
-    @Param('productId') productId: number,
+    @Param('productId', ParseIntPipe) productId: number,
   ): Promise<ProductEntity> {
     return this.productService.updateProduct(updateProduct, productId);
   }

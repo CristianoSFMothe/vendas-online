@@ -1,10 +1,15 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CartEntity } from './entities/cart.entity';
 import { DeleteResult, Repository } from 'typeorm';
 import { InsertCartDto } from './dto/insertCart.dto';
 import { CartProductService } from '../cart-product/cart-product.service';
 import { UpdateCartDto } from './dto/updateCart.dto';
+import { ProductService } from '../product/product.service';
 
 const LINE_AFFECTED = 1;
 
@@ -15,6 +20,8 @@ export class CartService {
     private readonly cartRepository: Repository<CartEntity>,
 
     private readonly cartProductService: CartProductService,
+
+    private readonly productService: ProductService,
   ) {}
 
   async findCartByUserId(
@@ -52,6 +59,20 @@ export class CartService {
     const cart = await this.findCartByUserId(userId).catch(async () => {
       return this.createCart(userId);
     });
+
+    const product = await this.productService.findProductById(
+      insertCartDto.productId,
+    );
+
+    if (product.amount < insertCartDto.amount) {
+      throw new BadRequestException(
+        'Quantidade solicitada maior do que a disponível',
+      );
+    }
+
+    product.amount -= insertCartDto.amount;
+
+    await this.productService.updateProductAmount(product.id, product.amount);
 
     await this.cartProductService.insertProductInCart(insertCartDto, cart);
 
