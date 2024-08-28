@@ -143,7 +143,6 @@ describe('ProductService', () => {
   describe('deleteProduct', () => {
     it('should return product in find by id', async () => {
       const product = await service.findProductById(ProductMock.id);
-      console.log(product);
 
       expect(product).toEqual(ProductMock);
     });

@@ -3,7 +3,7 @@ import { UserService } from '../user.service';
 import { Repository } from 'typeorm';
 import { UserEntity } from '../entities/user.entities';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { ReturnUserDto } from '../dtos/returnUser.dto';
+import { ReturnUserDto } from '../dto/returnUser.dto';
 import {
   BadRequestException,
   ConflictException,

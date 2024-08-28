@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from '../auth.controller';
 import { AuthService } from '../auth.service';
-import { ReturnLogin } from '../dtos/returnLogin.dto';
-import { LoginDto } from '../dtos/login.dto';
+import { ReturnLogin } from '../dto/returnLogin.dto';
+import { LoginDto } from '../dto/login.dto';
 import { returnLoginMock } from '../__mocks__/returnLogin.mock';
 
 describe('AuthController', () => {
