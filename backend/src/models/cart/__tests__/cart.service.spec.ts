@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CartService } from '../cart.service';
-import { Repository } from 'typeorm';
-import { CartEntity } from '../entities/cart.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { CartService } from '../cart.service';
+import { CartEntity } from '../entities/cart.entity';
 
 describe('CartService', () => {
   let service: CartService;

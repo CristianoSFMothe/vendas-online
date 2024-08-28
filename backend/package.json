@@ -33,7 +33,9 @@
     "test:serviceCategory": "npm run test src/models/category/__tests__/category.service.spec.ts",
     "test:controllerCategory": "npm run test src/models/category/__tests__/category.controller.spec.ts",
     "test:serviceProduct": "npm run test src/models/product/__tests__/product.service.spec.ts",
-    "test:controllerProduct": "npm run test src/models/product/__tests__/product.controller.spec.ts"
+    "test:controllerProduct": "npm run test src/models/product/__tests__/product.controller.spec.ts",
+    "test:serviceCartProduct": "npm run test src/models/cart-product/__tests__/cart-product.service.spec.ts",
+    "test:serviceCart": "npm run test src/models/cart/__tests__/cart.service.spec.ts"
   },
   "dependencies": {
     "@nestjs/axios": "^2.0.0",
