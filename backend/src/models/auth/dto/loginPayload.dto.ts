@@ -1,4 +1,4 @@
-import { UserEntity } from 'src/models/user/entities/user.entities';
+import { UserEntity } from '../../../models/user/entities/user.entities';
 
 export class LoginPayload {
   id: number;

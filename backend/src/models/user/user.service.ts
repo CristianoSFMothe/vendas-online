@@ -7,13 +7,18 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entities';
 import { Repository } from 'typeorm';
-import { CreateUserDto } from './dtos/createUser.dto';
-import { hash } from 'bcrypt';
+import { CreateUserDto } from './dto/createUser.dto';
 import { isValidCpf } from './utils/isValidCpf.utils';
 import { formatCpf } from './utils/formatting.utils';
 import { calculateAge } from './utils/age.utils';
-import { ReturnUserDto } from './dtos/returnUser.dto';
-import { UpdateUserDto } from './dtos/updateUser.dto';
+import { ReturnUserDto } from './dto/returnUser.dto';
+import { UpdateUserDto } from './dto/updateUser.dto';
+import { UserType } from '../../enum/userType.enum';
+import { UpdatePasswordUser } from './dto/updatePassword.dto';
+import {
+  createPasswordHashed,
+  validatePassword,
+} from '../../utils/password.utils';
 
 @Injectable()
 export class UserService {
@@ -23,21 +28,18 @@ export class UserService {
   ) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<ReturnUserDto> {
-    // Validação de CPF
     if (!isValidCpf(createUserDto.cpf)) {
       throw new BadRequestException('CPF inválido.');
     }
 
-    // Verificar se o email já está cadastrado
-    const existingUserByEmail = await this.userRepository.findOne({
-      where: { email: createUserDto.email },
-    });
+    const existingUserByEmail = await this.findUserByEmail(
+      createUserDto.email,
+    ).catch(() => undefined);
 
     if (existingUserByEmail) {
       throw new ConflictException('Email já cadastrado.');
     }
 
-    // Verificar se o CPF já está cadastrado
     const existingUserByCpf = await this.userRepository.findOne({
       where: { cpf: createUserDto.cpf },
     });
@@ -46,20 +48,16 @@ export class UserService {
       throw new ConflictException('CPF já cadastrado.');
     }
 
-    // Se as validações passarem, prosseguir com o hash da senha e salvar o usuário
-    const saltOrRounds = 10;
-    const passwordHashed = await hash(createUserDto.password, saltOrRounds);
+    const passwordHashed = await createPasswordHashed(createUserDto.password);
 
     const age = calculateAge(createUserDto.dateOfBirth);
 
-    // Formatação dos valores
     const formattedCpf = formatCpf(createUserDto.cpf);
 
-    // Salva o usuário no banco de dados
     const user = await this.userRepository.save({
       ...createUserDto,
       cpf: formattedCpf,
-      typeUser: 1,
+      typeUser: UserType.USER,
       password: passwordHashed,
       age,
     });
@@ -86,10 +84,8 @@ export class UserService {
   }
 
   async getUserByIdUsingRelations(userId: number): Promise<UserEntity> {
-    return this.userRepository.findOne({
-      where: {
-        id: userId,
-      },
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
       relations: {
         addresses: {
           city: {
@@ -98,6 +94,12 @@ export class UserService {
         },
       },
     });
+
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado.');
+    }
+
+    return user;
   }
 
   async findUserByEmail(email: string): Promise<UserEntity> {
@@ -108,7 +110,7 @@ export class UserService {
     });
 
     if (!user) {
-      throw new NotFoundException('Usuário ou senha inválidos.');
+      throw new NotFoundException('Usuário não encontrado.');
     }
 
     return user;
@@ -119,6 +121,10 @@ export class UserService {
     updateUserDto: UpdateUserDto,
   ): Promise<UserEntity> {
     const user = await this.findUserById(id);
+
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado.');
+    }
 
     const updatedUser = Object.assign(user, updateUserDto);
 
@@ -135,5 +141,30 @@ export class UserService {
     }
 
     await this.userRepository.remove(user);
+  }
+
+  async updatePasswordUser(
+    updatePasswordUser: UpdatePasswordUser,
+    userId: number,
+  ): Promise<UserEntity> {
+    const user = await this.findUserById(userId);
+
+    const passwordHashed = await createPasswordHashed(
+      updatePasswordUser.newPassword,
+    );
+
+    const isMatch = await validatePassword(
+      updatePasswordUser.lastPassword,
+      user.password || '',
+    );
+
+    if (!isMatch) {
+      throw new BadRequestException('Senha inválida');
+    }
+
+    return this.userRepository.save({
+      ...user,
+      password: passwordHashed,
+    });
   }
 }

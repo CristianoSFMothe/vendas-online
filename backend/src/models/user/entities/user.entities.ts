@@ -8,7 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { GenderType } from '../enum/user.enum';
-import { AddressEntity } from 'src/models/address/entities/address.entity';
+import { AddressEntity } from '../../../models/address/entities/address.entity';
 
 @Entity({ name: 'user' })
 @Unique(['email', 'cpf'])
@@ -83,7 +83,7 @@ export class UserEntity {
   @Column({
     name: 'password',
     type: 'varchar',
-    length: 2500,
+    length: 250,
     nullable: false,
   })
   password: string;
@@ -91,10 +91,18 @@ export class UserEntity {
   @Column({ name: 'type_user', nullable: false })
   typeUser: number;
 
-  @CreateDateColumn({ name: 'created_at' })
+  @CreateDateColumn({
+    name: 'created_at',
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   createdAt: Date;
 
-  @UpdateDateColumn({ name: 'updated_at' })
+  @UpdateDateColumn({
+    name: 'updated_at',
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   updatedAt: Date;
 
   @OneToMany(() => AddressEntity, (address) => address.user)

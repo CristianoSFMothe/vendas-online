@@ -1,5 +1,5 @@
-import { AddressEntity } from 'src/models/address/entities/address.entity';
-import { StateEntity } from 'src/models/state/entities/state.entity';
+import { AddressEntity } from '../../../models/address/entities/address.entity';
+import { StateEntity } from '../../../models/state/entities/state.entity';
 import {
   Column,
   CreateDateColumn,
@@ -16,16 +16,33 @@ export class CityEntity {
   @PrimaryGeneratedColumn('rowid')
   id: number;
 
-  @Column({ name: 'state_id', nullable: false })
+  @Column({
+    name: 'state_id',
+    type: 'int',
+    nullable: false,
+  })
   stateId: number;
 
-  @Column({ name: 'name', nullable: false })
+  @Column({
+    name: 'name',
+    type: 'varchar',
+    length: 150,
+    nullable: false,
+  })
   name: string;
 
-  @CreateDateColumn({ name: 'created_at' })
+  @CreateDateColumn({
+    name: 'created_at',
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   createdAt: Date;
 
-  @UpdateDateColumn({ name: 'updated_at' })
+  @UpdateDateColumn({
+    name: 'updated_at',
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   updatedAt: Date;
 
   @OneToMany(() => AddressEntity, (address) => address.city)

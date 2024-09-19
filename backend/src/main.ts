@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as dotenv from 'dotenv';
 import { ValidationPipe } from '@nestjs/common';
-import { ValidationExceptionFilter } from './filters/ValidationExceptionFilter';
+import { ValidationExceptionFilter } from './filters/ValidationException.filter';
 
 dotenv.config();
 

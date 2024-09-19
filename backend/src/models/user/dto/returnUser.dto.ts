@@ -1,4 +1,4 @@
-import { ReturnAddressDto } from 'src/models/address/dtos/returnAddress.dto';
+import { ReturnAddressDto } from '../../../models/address/dtos/returnAddress.dto';
 import { UserEntity } from '../entities/user.entities';
 import { GenderType } from '../enum/user.enum';
 
