@@ -7,14 +7,14 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entities';
 import { Repository } from 'typeorm';
-import { CreateUserDto } from './dtos/createUser.dto';
+import { CreateUserDto } from './dto/createUser.dto';
 import { isValidCpf } from './utils/isValidCpf.utils';
 import { formatCpf } from './utils/formatting.utils';
 import { calculateAge } from './utils/age.utils';
-import { ReturnUserDto } from './dtos/returnUser.dto';
-import { UpdateUserDto } from './dtos/updateUser.dto';
+import { ReturnUserDto } from './dto/returnUser.dto';
+import { UpdateUserDto } from './dto/updateUser.dto';
 import { UserType } from '../../enum/userType.enum';
-import { UpdatePasswordUser } from './dtos/updatePassword.dto';
+import { UpdatePasswordUser } from './dto/updatePassword.dto';
 import {
   createPasswordHashed,
   validatePassword,

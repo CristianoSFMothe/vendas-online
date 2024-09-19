@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ProductEntity } from './entities/product.entity';
 import { DeleteResult, Like, Repository } from 'typeorm';
 import { CategoryService } from '../category/category.service';
-import { CreateProductDto } from './dtos/createProduct.dto';
-import { UpdateProductDto } from './dtos/updateProduct.dto';
+import { CreateProductDto } from './dto/createProduct.dto';
+import { UpdateProductDto } from './dto/updateProduct.dto';
 
 @Injectable()
 export class ProductService {
@@ -103,5 +103,9 @@ export class ProductService {
       ...product,
       ...updateProduct,
     });
+  }
+
+  async updateProductAmount(productId: number, amount: number): Promise<void> {
+    await this.productRepository.update(productId, { amount });
   }
 }

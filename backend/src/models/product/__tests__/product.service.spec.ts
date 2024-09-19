@@ -29,7 +29,7 @@ describe('ProductService', () => {
           provide: getRepositoryToken(ProductEntity),
           useValue: {
             find: jest.fn().mockResolvedValue([ProductMock]),
-            findOne: jest.fn().mockResolvedValue([ProductMock]),
+            findOne: jest.fn().mockResolvedValue(ProductMock),
             save: jest.fn().mockResolvedValue(ProductMock),
             update: jest.fn().mockResolvedValue(ProductMock),
             delete: jest.fn().mockResolvedValue(returnDeleteMock),
@@ -143,7 +143,6 @@ describe('ProductService', () => {
   describe('deleteProduct', () => {
     it('should return product in find by id', async () => {
       const product = await service.findProductById(ProductMock.id);
-      console.log(product);
 
       expect(product).toEqual(ProductMock);
     });
@@ -162,7 +161,7 @@ describe('ProductService', () => {
   });
 
   describe('updateProduct', () => {
-    it('should return produt after update', async () => {
+    it('should return product after update', async () => {
       const product = await service.updateProduct(
         CreateProductMock,
         ProductMock.id,
@@ -176,6 +175,32 @@ describe('ProductService', () => {
 
       expect(
         service.updateProduct(CreateProductMock, ProductMock.id),
+      ).rejects.toThrowError();
+    });
+  });
+
+  describe('updateProductAmount', () => {
+    it('should update the product amount successfully', async () => {
+      const productId = ProductMock.id;
+      const newAmount = 10;
+
+      const updateSpy = jest
+        .spyOn(productRepository, 'update')
+        .mockResolvedValue(undefined);
+
+      await service.updateProductAmount(productId, newAmount);
+
+      expect(updateSpy).toHaveBeenCalledWith(productId, { amount: newAmount });
+    });
+
+    it('should throw an error if update fails', async () => {
+      const productId = ProductMock.id;
+      const newAmount = 10;
+
+      jest.spyOn(productRepository, 'update').mockRejectedValue(new Error());
+
+      await expect(
+        service.updateProductAmount(productId, newAmount),
       ).rejects.toThrowError();
     });
   });

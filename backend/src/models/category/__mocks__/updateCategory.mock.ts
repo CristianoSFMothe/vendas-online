@@ -1,4 +1,4 @@
-import { UpdateCategoryDto } from '../dtos/updateCategory.dto';
+import { UpdateCategoryDto } from '../dto/updateCategory.dto';
 
 export const UpdatedCategoryMock: UpdateCategoryDto = {
   name: 'UpdateCategoryMock',

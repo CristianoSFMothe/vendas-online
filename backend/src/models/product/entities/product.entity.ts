@@ -1,10 +1,12 @@
-import { CategoryEntity } from '../../../models/category/entities/category.entity';
+import { CategoryEntity } from '../../category/entities/category.entity';
+import { CartProductEntity } from '../../../models/cart-product/entities/cart-product.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -17,15 +19,24 @@ export class ProductEntity {
   @Column({
     name: 'name',
     type: 'varchar',
-    length: 150,
+    length: 50,
     nullable: false,
   })
   name: string;
 
   @Column({
-    name: 'price',
-    type: 'double precision',
+    name: 'category_id',
+    type: 'int',
     nullable: false,
+  })
+  categoryId: number;
+
+  @Column({
+    name: 'price',
+    type: 'decimal',
+    nullable: false,
+    precision: 10,
+    scale: 2,
   })
   price: number;
 
@@ -39,17 +50,9 @@ export class ProductEntity {
   @Column({
     name: 'image',
     type: 'varchar',
-    length: 255,
     nullable: false,
   })
   image: string;
-
-  @Column({
-    name: 'category_id',
-    type: 'int',
-    nullable: false,
-  })
-  categoryId: number;
 
   @CreateDateColumn({
     name: 'created_at',
@@ -64,6 +67,9 @@ export class ProductEntity {
     default: () => 'CURRENT_TIMESTAMP',
   })
   updatedAt: Date;
+
+  @OneToMany(() => CartProductEntity, (cartProduct) => cartProduct.product)
+  cartProduct?: CartProductEntity[];
 
   @ManyToOne(
     () => CategoryEntity,

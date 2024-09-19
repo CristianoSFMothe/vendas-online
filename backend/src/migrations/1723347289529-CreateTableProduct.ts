@@ -25,8 +25,10 @@ export class CreateTableProduct1723347289529 implements MigrationInterface {
           },
           {
             name: 'price',
-            type: 'double precision',
+            type: 'decimal',
             isNullable: false,
+            precision: 10,
+            scale: 2,
           },
           {
             name: 'amount',
